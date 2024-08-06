@@ -1,5 +1,6 @@
 
 #include "Mouse.h"
+#include <Windows.h>
 
 std::pair<int, int> Mouse::GetPos() const noexcept
 {
@@ -14,6 +15,11 @@ int Mouse::GetPosX() const noexcept
 int Mouse::GetPosY() const noexcept
 {
     return y;
+}
+
+int Mouse::GetWheelDeltaCarry() const noexcept
+{
+    return wheelDeltaCarry;
 }
 
 bool Mouse::IsInWindow() const noexcept
@@ -115,6 +121,24 @@ void Mouse::OnWheelDown(int x, int y) noexcept
 {
     buffer.push(Mouse::Event(Mouse::Event::Type::WheelDown, *this));
     TrimBuffer();
+}
+
+void Mouse::OnWheelDelta(int x, int y , int delta) noexcept
+{
+    wheelDeltaCarry += delta;
+
+    ///WHEEL_DELTA = 120
+    while (wheelDeltaCarry >= WHEEL_DELTA)
+    {
+        wheelDeltaCarry -= WHEEL_DELTA;
+        OnWheelUp(x, y);
+    }
+
+    while (wheelDeltaCarry <= -WHEEL_DELTA)
+    {
+        wheelDeltaCarry += WHEEL_DELTA;
+        OnWheelDown(x, y);
+    }
 }
 
 void Mouse::TrimBuffer() noexcept

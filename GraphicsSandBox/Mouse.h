@@ -98,6 +98,8 @@ public:
     int GetPosX() const noexcept;
     int GetPosY() const noexcept;
 
+    int GetWheelDeltaCarry() const noexcept;
+
 
     bool IsInWindow() const noexcept;
     bool LeftIsPressed() const noexcept;
@@ -125,6 +127,9 @@ private:
     void OnRightReleased(int x, int y) noexcept;
     void OnWheelUp(int x, int y) noexcept;
     void OnWheelDown(int x, int y) noexcept;
+
+    void OnWheelDelta(int x, int y, int delta) noexcept;
+
     void TrimBuffer() noexcept;
 
 private:
