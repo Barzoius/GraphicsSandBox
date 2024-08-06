@@ -43,6 +43,9 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 }
 
 Window::Window(int width, int height, const char* name) 
+    :
+    width(width),
+    height(height)
 {
     RECT wr;
     wr.left = 100;
@@ -50,7 +53,7 @@ Window::Window(int width, int height, const char* name)
     wr.top = 100;
     wr.bottom = height + wr.top;
 
-    if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+    if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0 )
     {
         throw CHWND_LAST_EXCEPT();
     };
@@ -69,6 +72,14 @@ Window::Window(int width, int height, const char* name)
 
     ShowWindow(hWnd, SW_SHOWDEFAULT);
 
+}
+
+void Window::SetTitle(const std::string& title)
+{
+    if (SetWindowText(hWnd, title.c_str()) == 0)
+    {
+        throw CHWND_LAST_EXCEPT();
+    }
 }
 
 Window::~Window(){ DestroyWindow(hWnd);}
@@ -125,7 +136,83 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
     case WM_CHAR:
         kbd.OnChar(static_cast<unsigned char>(wParam));
         break;
+
+    case WM_MOUSEMOVE:
+    {
+        const POINTS point = MAKEPOINTS(lParam);
+
+        if (point.x >= 0 && point.x < width &&
+            point.y >= 0 && point.y < height)
+        {
+            mouse.OnMouseMove(point.x, point.y);
+            
+            if (!mouse.IsInWindow())
+            {
+                ///keep recieving mouse signals
+                ///even with the mouse outside the window
+                SetCapture(hWnd);
+                mouse.OnMouseEnter();
+            }
+        }
+        else
+        {
+            ///checks if lbutton/rbutton are down 
+            ///so we can keep dragging
+            if (wParam & (MK_LBUTTON | MK_RBUTTON))
+            {
+                mouse.OnMouseMove(point.x, point.y);
+            }
+            else
+            {
+                ReleaseCapture();
+                mouse.OnMouseLeave();
+            }
+        }
     }
+
+    case WM_LBUTTONDOWN:
+    {
+        const POINTS point = MAKEPOINTS(lParam);
+        mouse.OnLeftPressed(point.x, point.y);
+        break;
+    }
+
+    case WM_RBUTTONDOWN:
+    {
+        const POINTS point = MAKEPOINTS(lParam);
+        mouse.OnRightPressed(point.x, point.y);
+        break;
+    }
+
+    case WM_LBUTTONUP:
+    {
+        const POINTS point = MAKEPOINTS(lParam);
+        mouse.OnLeftReleased(point.x, point.y);
+        break;
+    }
+
+    case WM_RBUTTONUP:
+    {
+        const POINTS point = MAKEPOINTS(lParam);
+        mouse.OnRightReleased(point.x, point.y);
+        break;
+    }
+
+    case WM_MOUSEWHEEL:
+    {
+        const POINTS point = MAKEPOINTS(lParam);
+        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+        {
+            mouse.OnWheelUp(point.x, point.y);
+        }
+        else
+        {
+            mouse.OnWheelDown(point.x, point.y);
+        }
+        break;
+    }
+    }
+
 
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }

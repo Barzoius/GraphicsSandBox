@@ -1,5 +1,6 @@
 
 #include "Window.h"
+#include<sstream>
 
 
 int CALLBACK WinMain(
@@ -18,6 +19,27 @@ int CALLBACK WinMain(
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+
+            while (!wnd.mouse.IsEmpty())
+            {
+                const auto e = wnd.mouse.Read();
+                switch (e.GetType())
+                {
+                case Mouse::Event::Type::Leave:
+                    wnd.SetTitle("Outisde the window");
+                    break;
+
+                case Mouse::Event::Type::Move:
+                {
+                    std::ostringstream oss;
+                    oss << "Mouse Pos: (" << e.GetPosX() << ", "
+                        << e.GetPosY() << ")" << std::endl;
+
+                    wnd.SetTitle(oss.str());
+                }
+                }
+
+            }
 
             if (wnd.kbd.KeyIsPressed(VK_MENU))
             {
