@@ -127,7 +127,7 @@ void Mouse::OnWheelDelta(int x, int y , int delta) noexcept
 {
     wheelDeltaCarry += delta;
 
-    ///WHEEL_DELTA = 120
+    /// WHEEL_DELTA = 120
     while (wheelDeltaCarry >= WHEEL_DELTA)
     {
         wheelDeltaCarry -= WHEEL_DELTA;

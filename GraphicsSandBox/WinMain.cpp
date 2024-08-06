@@ -1,5 +1,6 @@
 
 #include "Window.h"
+#include "Application.h"
 #include<sstream>
 
 
@@ -10,73 +11,7 @@ int CALLBACK WinMain(
     int nCmdShow)
 {
     try {
-        Window wnd(800, 400, "SAHUF");
-
-        MSG msg;
-        BOOL gResult;
-
-        while ((gResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            
-            static int i = 0;
-            while (!wnd.mouse.IsEmpty())
-            {
-                const auto e = wnd.mouse.Read();
-                switch (e.GetType())
-                {
-                case Mouse::Event::Type::Leave:
-                    wnd.SetTitle("Outisde the window");
-                    break;
-
-                case Mouse::Event::Type::Move:
-                {
-                    std::ostringstream oss;
-                    oss << "Mouse Pos: (" << e.GetPosX() << ", "
-                        << e.GetPosY() << ")" << std::endl;
-
-                    wnd.SetTitle(oss.str());
-                    break;
-                }
-                
-                case Mouse::Event::Type::WheelUp:
-                    i++;
-                    {
-                        std::ostringstream oss;
-                        oss << "Up: " << i;
-                        wnd.SetTitle(oss.str());
-                    }
-                    break;
-                case Mouse::Event::Type::WheelDown:
-                    i--;
-                    {
-                        std::ostringstream oss;
-                        oss << "Down: " << i;
-                        wnd.SetTitle(oss.str());
-                    }
-                    break;
-                
-                }
-
-            }
-
-            if (wnd.kbd.KeyIsPressed(VK_MENU))
-            {
-                MessageBox(nullptr, "Smth", "SPACE KEY WAS PRESSED", 
-                    MB_OK | MB_ICONEXCLAMATION);
-            }
-        }
-
-        if (gResult == -1)
-        {
-            return -1;
-        }
-        else
-        {
-            return msg.wParam;
-        }
-
+        return Application{}.Run();
     }
     catch (const ModException& e)
     {

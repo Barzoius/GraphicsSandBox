@@ -82,6 +82,25 @@ void Window::SetTitle(const std::string& title)
     }
 }
 
+std::optional<int> Window::ProccessMessages()
+{
+    MSG msg;
+
+    ///PeekMessage doesnt block on WM_QUIT
+    while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    {
+        if (msg.message == WM_QUIT)
+        {
+            return msg.wParam;
+        }
+
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return {};
+}
+
 Window::~Window(){ DestroyWindow(hWnd);}
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
