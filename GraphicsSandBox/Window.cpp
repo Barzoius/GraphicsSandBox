@@ -72,6 +72,8 @@ Window::Window(int width, int height, const char* name)
 
     ShowWindow(hWnd, SW_SHOWDEFAULT);
 
+    pGfx = std::make_unique<Graphics>(hWnd);
+
 }
 
 void Window::SetTitle(const std::string& title)
@@ -99,6 +101,11 @@ std::optional<int> Window::ProccessMessages()
     }
 
     return {};
+}
+
+Graphics& Window::Gfx()
+{
+    return *pGfx;
 }
 
 Window::~Window(){ DestroyWindow(hWnd);}

@@ -76,11 +76,13 @@ int Application::Run()
 
 void Application::DoFrame()
 {
-    const float t = timer.Peek();
-    std::ostringstream oss;
-    oss << "TimePassed: " 
-        << std::setprecision(1) 
-        << std::fixed << t << " s" 
-        << std::endl;
-    wnd.SetTitle(oss.str());
+    //const float t = timer.Peek();
+    //std::ostringstream oss;
+    //oss << "TimePassed: " 
+    //    << std::setprecision(1) 
+    //    << std::fixed << t << " s" 
+    //    << std::endl;
+    //wnd.SetTitle(oss.str());
+
+    wnd.Gfx().EndFrame();
 }
