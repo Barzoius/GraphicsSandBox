@@ -83,6 +83,8 @@ void Application::DoFrame()
     //    << std::fixed << t << " s" 
     //    << std::endl;
     //wnd.SetTitle(oss.str());
+    /*wnd.Gfx().ClearBuffer(c, c, );*/
+    wnd.Gfx().DrawTrig();
 
     wnd.Gfx().EndFrame();
 }

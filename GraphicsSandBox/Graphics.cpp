@@ -1,9 +1,28 @@
 #include "Graphics.h"
+#include "GFX_MACROS.h"
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
+
+#define GFX_THROW_FAILED(hrcall) if(FAILED(hr = (hrcall))) throw Graphics::HrException(__LINE__,__FILE__,hr)
+#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException(__LINE__,__FILE__, (hr))
+
+#ifndef NDEBUG
+#define GFX_EXCEPT(hr) Graphics::HrException( __LINE__,__FILE__,(hr),infoManager.GetMessages() )
+#define GFX_THROW_INFO(hrcall) infoManager.Set(); if( FAILED( hr = (hrcall) ) ) throw GFX_EXCEPT(hr)
+#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException( __LINE__,__FILE__,(hr),infoManager.GetMessages() )
+#define GFX_THROW_INFO_ONLY(call) infoManager.Set(); (call); {auto v = infoManager.GetMessages(); if(!v.empty()) {throw Graphics::InfoException( __LINE__,__FILE__,v);}}
+#else
+#define GFX_EXCEPT(hr) Graphics::HrException( __LINE__,__FILE__,(hr) )
+#define GFX_THROW_INFO(hrcall) GFX_THROW_NOINFO(hrcall)
+#define GFX_DEVICE_REMOVED_EXCEPT(hr) Graphics::DeviceRemovedException( __LINE__,__FILE__,(hr) )
+#define GFX_THROW_INFO_ONLY(call) (call)
+#endif
+
 
 Graphics::Graphics(HWND hWnd) 
 {
+
     DXGI_SWAP_CHAIN_DESC sd = {};
     sd.BufferDesc.Width = 0;
     sd.BufferDesc.Height = 0;
@@ -16,16 +35,24 @@ Graphics::Graphics(HWND hWnd)
     sd.SampleDesc.Quality = 0;
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.BufferCount = 1; /// Double Buffering
-    sd.OutputWindow = hWnd;
+    sd.OutputWindow = hWnd;  /*(HWND)69696969;*/
     sd.Windowed = TRUE;
     sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     sd.Flags = 0;
 
-    D3D11CreateDeviceAndSwapChain(
+    UINT creationFlags = 0u;
+#if defined(_DEBUG)
+    // If the project is in a debug build, enable the debug layer.
+    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+    HRESULT hr;
+
+    GFX_THROW_INFO( D3D11CreateDeviceAndSwapChain(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
-        0,
+        creationFlags,
         nullptr,
         0,
         D3D11_SDK_VERSION,
@@ -33,30 +60,167 @@ Graphics::Graphics(HWND hWnd)
         &pSwapChain,
         &pDevice,
         nullptr, /// D3D_FEATURE_LEVEL
-        &pContext );
+        &pContext ) );
 
 
-    ID3D11Resource* pBackBuffer = nullptr;
+    Microsoft::WRL::ComPtr<ID3D11Resource> pBackBuffer = nullptr;
 
-    pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource),
-                          reinterpret_cast<void**>(&pBackBuffer));
+    GFX_THROW_INFO(pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
 
-    pDevice->CreateRenderTargetView(pBackBuffer, nullptr, &pTarget);
+    GFX_THROW_INFO(pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTarget));
 }
 
 
-Graphics::~Graphics()
-{
-    if (pTarget != nullptr) pTarget->Release();
-
-    if (pContext != nullptr) pContext->Release();
-
-    if (pSwapChain != nullptr) pSwapChain->Release();
-
-    if (pDevice != nullptr) pDevice->Release();
-}
+//Graphics::~Graphics()
+//{
+//    //if (pTarget != nullptr) pTarget->Release();
+//
+//    //if (pContext != nullptr) pContext->Release();
+//
+//    //if (pSwapChain != nullptr) pSwapChain->Release();
+//
+//    //if (pDevice != nullptr) pDevice->Release();
+//}
 
 void Graphics::EndFrame()
 {
-    pSwapChain->Present(1u, 0u);
+   
+    HRESULT hr;
+
+#ifndef NDEBUG
+    infoManager.Set();
+#endif
+
+    if (FAILED(hr = pSwapChain -> Present(1u, 0u)))
+    {
+        if (hr == DXGI_ERROR_DEVICE_REMOVED)
+        {
+            throw GFX_DEVICE_REMOVED_EXCEPT(pDevice->GetDeviceRemovedReason());
+        }
+        else
+        {
+           throw GFX_EXCEPT(hr);
+        }
+    }
+   
+}
+
+
+Graphics::HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> INFOMessages) noexcept
+    :
+    Exception(line, file),
+    hr(hr)
+{
+
+    for (const auto& m : INFOMessages)
+    {
+        info += m;
+        info.push_back('\n');
+    }
+    // remove final newline if exists
+    if (!info.empty())
+    {
+        info.pop_back();
+    }
+
+}
+
+const char* Graphics::HrException::what() const noexcept
+{
+    std::ostringstream oss;
+    oss << GetType() << std::endl
+        << "[ERROR CODE] " << GetErrorCode() << std::endl
+        << "[ERROR STRING] " << GetErrorString() << std::endl
+        << "[DESCRIPTION] " << GetErrorString() << std::endl;
+
+    if (!info.empty())
+        oss << "\n[ERROR INFO]\n" << GetErrorInfo() << std::endl << std::endl;
+    
+       oss << GetOriginString();
+
+    whatBuffer = oss.str();
+    return whatBuffer.c_str();
+}
+
+const char* Graphics::HrException::GetType() const noexcept
+{
+    return "[GRAPHICS_EXCEPTION]";
+}
+
+std::string Graphics::HrException::TranslateErrorCode(HRESULT hr) noexcept
+{
+    char* pMsgBuf = nullptr;
+    DWORD nMsgLen = FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr,
+        hr,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        reinterpret_cast<LPSTR>(&pMsgBuf),
+        0, nullptr);
+
+    if (nMsgLen == 0) return "[UNIDENTIFIED_ERROR_CODE]";
+
+    std::string errorString = pMsgBuf;
+    LocalFree(pMsgBuf);
+    return errorString;
+}
+
+HRESULT Graphics::HrException::GetErrorCode() const noexcept
+{
+    return hr;
+}
+
+std::string Graphics::HrException::GetErrorString() const noexcept
+{
+    return TranslateErrorCode(hr);
+}
+
+const char* Graphics::DeviceRemovedException::GetType() const noexcept
+{
+    return "Graphics Exception [Device Removed] (DXGI_ERROR_DEVICE_REMOVED)";
+}
+
+std::string Graphics::HrException::GetErrorInfo() const noexcept
+{
+    return info;
+}
+
+
+Graphics::InfoException::InfoException(int line, const char* file, std::vector<std::string> infoMsgs) noexcept
+    :
+    Exception(line, file)
+{
+    for (const auto& m : infoMsgs)
+    {
+        info += m;
+        info.push_back('\n');
+    }
+
+    if (!info.empty())
+    {
+        info.pop_back();
+    }
+}
+
+
+const char* Graphics::InfoException::what() const noexcept
+{
+    std::ostringstream oss;
+    oss << GetType() << std::endl
+        << "\n[ERROR INFO]\n" << GetErrorInfo() << std::endl << std::endl;
+    oss << GetOriginString();
+    whatBuffer = oss.str();
+    return whatBuffer.c_str();
+}
+
+const char* Graphics::InfoException::GetType() const noexcept
+{
+    return "GRAHICS INFO EXCEPTION";
+}
+
+std::string Graphics::InfoException::GetErrorInfo() const noexcept
+{
+    return info;
 }

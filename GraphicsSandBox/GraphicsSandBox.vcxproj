@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ErrorInfoManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="ModException.cpp" />
@@ -158,6 +159,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ErrorInfoManager.h" />
+    <ClInclude Include="GFX_MACROS.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="ModException.h" />
@@ -166,6 +169,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WND_MACROS.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Users\mecca\Desktop\images-removebg-preview.png" />

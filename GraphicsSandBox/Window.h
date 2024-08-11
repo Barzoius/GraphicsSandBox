@@ -8,6 +8,9 @@
 #include <optional>
 #include <memory>
 
+#define HWND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, (hr));
+#define HWND_LAST_EXCEPT() Window::Exception(__LINE__, __FILE__, GetLastError());
+#define HWND_NOGFX_EXCEPT() Window::NoGFXException( __LINE__,__FILE__ )
 
 class Window 
 {
@@ -15,6 +18,7 @@ class Window
 public:
     class Exception : public ModException
     {
+        using ModException::ModException;
     public:
         Exception(int line, const char* file, HRESULT hr) noexcept;
 
@@ -29,6 +33,12 @@ public:
         HRESULT hr;
     };
 
+    class NoGFXException : public Exception
+    {
+    public:
+        using Exception::Exception;
+        const char* GetType() const noexcept override;
+    };
 private:
 
     class WindowClass
@@ -78,6 +88,3 @@ private:
     std::unique_ptr<Graphics> pGfx;
 
 };
-
-#define CHWND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, hr);
-#define CHWND_LAST_EXCEPT() Window::Exception(__LINE__, __FILE__, GetLastError());

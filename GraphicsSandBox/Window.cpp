@@ -1,4 +1,6 @@
 #include "Window.h"
+#include "WND_MACROS.h"
+
 #include <sstream>
 #include "resource.h"
 
@@ -55,7 +57,7 @@ Window::Window(int width, int height, const char* name)
 
     if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0 )
     {
-        throw CHWND_LAST_EXCEPT();
+        throw HWND_LAST_EXCEPT();
     };
 
     hWnd = CreateWindow(
@@ -67,7 +69,7 @@ Window::Window(int width, int height, const char* name)
       WindowClass::GetInstance(), this
   );
 
-    if (hWnd == nullptr) throw CHWND_LAST_EXCEPT();
+    if (hWnd == nullptr) throw HWND_LAST_EXCEPT();
 
 
     ShowWindow(hWnd, SW_SHOWDEFAULT);
@@ -80,7 +82,7 @@ void Window::SetTitle(const std::string& title)
 {
     if (SetWindowText(hWnd, title.c_str()) == 0)
     {
-        throw CHWND_LAST_EXCEPT();
+        throw HWND_LAST_EXCEPT();
     }
 }
 
@@ -105,6 +107,10 @@ std::optional<int> Window::ProccessMessages()
 
 Graphics& Window::Gfx()
 {
+    if (!pGfx)
+    {
+        throw HWND_NOGFX_EXCEPT();
+    }
     return *pGfx;
 }
 
@@ -302,3 +308,9 @@ std::string Window::Exception::GetErrorString() const noexcept
 {
     return TranslateErrorCode(hr);
 }
+
+const char* Window::NoGFXException::GetType() const noexcept
+{
+    return "WINDOW_EXCEPTION::NO_GRAPHICS";
+}
+
