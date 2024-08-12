@@ -69,45 +69,7 @@ public:
     void EndFrame();
     void ClearBuffer(float red, float green, float blue) noexcept;
 
-    void DrawTrig()
-    {
-        namespace WRL = Microsoft::WRL;
-        
-        struct Vertex
-        {
-            float x, y;
-        };
-
-        const Vertex vertices[] =
-        {
-            {0.0f, 0.5f},
-            {0.5f, -0.5f},
-            {-0.5f, -0.5f}
-        };
-
-        WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
-
-        D3D11_BUFFER_DESC bd = {};
-        bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        bd.Usage = D3D11_USAGE_DEFAULT;
-        bd.CPUAccessFlags = 0u;
-        bd.MiscFlags = 0u;
-        bd.ByteWidth = sizeof(vertices);
-        bd.StructureByteStride = sizeof(Vertex);
-        
-        D3D11_SUBRESOURCE_DATA sd = {};
-        sd.pSysMem = vertices;
-
-        pDevice->CreateBuffer(&bd, &sd, &pVertexBuffer);
-
-        const UINT stride = sizeof(Vertex);
-        const UINT offset = 0u;
-
-        pContext->IASetVertexBuffers(0u, 1u,
-                                 &pVertexBuffer, &stride, &offset);
-
-        pContext->Draw(3u, 0u);
-    }
+    void DrawTrig();
    
 
 private:
