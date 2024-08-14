@@ -1,7 +1,24 @@
 #include "Application.h"
+#include "Cuboid.h"
 #include <sstream>
 
-Application::Application() : wnd( 800, 600, "Window" ) {}
+Application::Application() : wnd( 800, 600, "Window" ) 
+{
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
+    std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
+    std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
+    std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
+    for (auto i = 0; i < 80; i++)
+    {
+        cuboids.push_back(std::make_unique<Cuboid>(
+            wnd.Gfx(), rng, adist,
+            ddist, odist, rdist
+        ));
+    }
+
+        wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+}
 
 int Application::Run()
 {
@@ -74,6 +91,10 @@ int Application::Run()
 
 }
 
+Application::~Application()
+{}
+
+
 void Application::DoFrame()
 {
     //const float t = timer.Peek();
@@ -83,8 +104,16 @@ void Application::DoFrame()
     //    << std::fixed << t << " s" 
     //    << std::endl;
     //wnd.SetTitle(oss.str());
-    /*wnd.Gfx().ClearBuffer(c, c, );*/
-    wnd.Gfx().DrawTrig();
+    ///*wnd.Gfx().ClearBuffer(c, c, );*/
+    //wnd.Gfx().DrawTrig();
+
+    auto dt = timer.Mark();
+    wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+    for (auto& b : cuboids)
+    {
+        b->Update(dt);
+        b->Draw(wnd.Gfx());
+    }
 
     wnd.Gfx().EndFrame();
 }

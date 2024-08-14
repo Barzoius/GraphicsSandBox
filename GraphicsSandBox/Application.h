@@ -9,7 +9,10 @@ public:
     
     Application();
 
+    ~Application();
+
     int Run();
+
 
 private:
 
@@ -18,4 +21,6 @@ private:
 private:
     Window wnd;
     Timer timer;
+
+    std::vector<std::unique_ptr<class Cuboid>> cuboids;
 };

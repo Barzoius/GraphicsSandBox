@@ -16,7 +16,7 @@ InputLayout::InputLayout(Graphics& gfx,
     &pInputLayout));
 }
 
-void InputLayout::Bind(Graphics& gfx)
+void InputLayout::Bind(Graphics& gfx) noexcept
 {
     GetContext(gfx)->IASetInputLayout(pInputLayout.Get());
 }

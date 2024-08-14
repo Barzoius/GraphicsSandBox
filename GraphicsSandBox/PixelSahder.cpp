@@ -4,7 +4,7 @@
 
 #pragma comment(lib, "D3DCompiler.lib")
 
-PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
+PixelShader::PixelShader(Graphics& gfx, const std::wstring& path) noexcept
 {
 
     INFO_MANAGER(gfx);

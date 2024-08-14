@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Bindables">
       <UniqueIdentifier>{b5f35515-bb12-479a-a46b-1ef99cbc5d9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Drawables">
+      <UniqueIdentifier>{83a64fda-a538-4b98-8a1c-17f582c9cc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawables">
+      <UniqueIdentifier>{8cffbb0e-458c-47bd-ae09-e4fb1cf637ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -67,6 +73,15 @@
       <Filter>Source Files\Bindables</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
+      <Filter>Source Files\Bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="Cuboid.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformCbuffcpp.cpp">
       <Filter>Source Files\Bindables</Filter>
     </ClCompile>
   </ItemGroup>
@@ -136,6 +151,12 @@
     </ClInclude>
     <ClInclude Include="VertexShader.h">
       <Filter>Header Files\Bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Cuboid.h">
+      <Filter>Header Files\Drawables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

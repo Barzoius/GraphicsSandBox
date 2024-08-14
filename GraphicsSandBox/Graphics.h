@@ -7,6 +7,11 @@
 #include <wrl.h>
 #include "ErrorInfoManager.h"
 
+#include <d3dcompiler.h>
+#include <DirectXMath.h>
+
+#include <memory>
+#include <random>
 #include "sstream"
 
 
@@ -70,10 +75,17 @@ public:
     void EndFrame();
     void ClearBuffer(float red, float green, float blue) noexcept;
 
+    void DrawTestTriangle(float angle, float x, float y);
+    void DrawIndexed(UINT count) noexcept;
+    void SetProjection(DirectX::FXMMATRIX proj) noexcept;
+    DirectX::XMMATRIX GetProjection() const noexcept;
+
     void DrawTrig();
    
 
 private:
+
+    DirectX::XMMATRIX projection;
 
 #ifndef NDEBUG
     ErrorInfoManager infoManager;
@@ -83,4 +95,5 @@ private:
     Microsoft::WRL::ComPtr <ID3D11Device> pDevice = nullptr;
     Microsoft::WRL::ComPtr <ID3D11DeviceContext> pContext = nullptr; /// ImmediateContext
     Microsoft::WRL::ComPtr <ID3D11RenderTargetView> pTarget = nullptr;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 };
