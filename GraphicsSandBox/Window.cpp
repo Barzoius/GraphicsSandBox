@@ -1,8 +1,9 @@
 #include "Window.h"
-#include "WND_MACROS.h"
 
 #include <sstream>
 #include "resource.h"
+
+#include "WND_MACROS.h"
 
 Window::WindowClass Window::WindowClass::wndClass;
 

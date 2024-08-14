@@ -5,6 +5,8 @@
 #include <string>
 #include "wrl.h"
 
+
+
 class ErrorInfoManager
 {
 public:

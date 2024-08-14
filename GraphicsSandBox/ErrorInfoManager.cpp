@@ -1,5 +1,6 @@
 #include "ErrorInfoManager.h"
 #include "Window.h"
+#include "WND_MACROS.h"
 
 #pragma comment(lib, "dxguid.lib")
 
