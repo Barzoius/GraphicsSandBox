@@ -9,6 +9,7 @@ Application::Application() : wnd( 800, 600, "Window" )
     std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
     std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
     std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
+
     for (auto i = 0; i < 80; i++)
     {
         cuboids.push_back(std::make_unique<Cuboid>(
@@ -32,6 +33,8 @@ int Application::Run()
       {
           return *enter_code;
       }
+
+      /// DO FRAME ///
       DoFrame();
       
         static int i = 0;
@@ -97,15 +100,13 @@ Application::~Application()
 
 void Application::DoFrame()
 {
-    //const float t = timer.Peek();
-    //std::ostringstream oss;
-    //oss << "TimePassed: " 
-    //    << std::setprecision(1) 
-    //    << std::fixed << t << " s" 
-    //    << std::endl;
-    //wnd.SetTitle(oss.str());
-    ///*wnd.Gfx().ClearBuffer(c, c, );*/
-    //wnd.Gfx().DrawTrig();
+    const float t = timer.Peek();
+    std::ostringstream oss;
+    oss << "TimePassed: " 
+        << std::setprecision(1) 
+        << std::fixed << t << " s" 
+        << std::endl;
+    wnd.SetTitle(oss.str());
 
     auto dt = timer.Mark();
     wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);

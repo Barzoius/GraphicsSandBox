@@ -81,7 +81,7 @@
     <ClCompile Include="Cuboid.cpp">
       <Filter>Source Files\Drawables</Filter>
     </ClCompile>
-    <ClCompile Include="TransformCbuffcpp.cpp">
+    <ClCompile Include="TransformCbuf.cpp">
       <Filter>Source Files\Bindables</Filter>
     </ClCompile>
   </ItemGroup>
@@ -156,6 +156,9 @@
       <Filter>Header Files\Drawables</Filter>
     </ClInclude>
     <ClInclude Include="Cuboid.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="CRTPDrawable.h">
       <Filter>Header Files\Drawables</Filter>
     </ClInclude>
   </ItemGroup>
