@@ -172,6 +172,7 @@
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableObjects.h" />
     <ClInclude Include="CRTPDrawable.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="Cuboid.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Drawable.h" />
@@ -179,8 +180,10 @@
     <ClInclude Include="GFX_MACROS.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="IndexedTrigList.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="ModException.h" />
     <ClInclude Include="ModWin.h" />
     <ClInclude Include="Mouse.h" />
