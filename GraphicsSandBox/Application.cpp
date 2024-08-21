@@ -5,6 +5,9 @@
 #include "GDIPManager.h"
 #include "Sheet.h"
 
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_win32.h"
+#include "ImGui/imgui_impl_dx11.h"
 
 #include <sstream>
 #include <memory>
@@ -186,6 +189,20 @@ void Application::DoFrame()
         d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
         d->Draw(wnd.Gfx());
     }
+
+
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    static bool demo = true;
+    if (demo)
+    {
+        ImGui::ShowDemoWindow(&demo);
+    }
+
+    ImGui::Render();
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     wnd.Gfx().EndFrame();
 }

@@ -5,6 +5,8 @@
 
 #include "WND_MACROS.h"
 
+#include "ImGui/imgui_impl_win32.h"
+
 Window::WindowClass Window::WindowClass::wndClass;
 
 Window::WindowClass::WindowClass() noexcept : hInst(GetModuleHandle(nullptr))
@@ -75,6 +77,8 @@ Window::Window(int width, int height, const char* name)
 
     ShowWindow(hWnd, SW_SHOWDEFAULT);
 
+    ImGui_ImplWin32_Init(hWnd);
+
     pGfx = std::make_unique<Graphics>(hWnd);
 
 }
@@ -115,7 +119,11 @@ Graphics& Window::Gfx()
     return *pGfx;
 }
 
-Window::~Window(){ DestroyWindow(hWnd);}
+Window::~Window()
+{ 
+    ImGui_ImplWin32_Shutdown();
+    DestroyWindow(hWnd);
+}
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
@@ -143,6 +151,12 @@ LRESULT WINAPI Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+    {
+        return true;
+    }
+
     switch (msg)
     {
     case WM_CLOSE:

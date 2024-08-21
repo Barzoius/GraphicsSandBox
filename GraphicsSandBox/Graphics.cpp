@@ -10,6 +10,8 @@
 
 #include "GFX_MACROS.h"
 
+#include "ImGui/imgui_impl_dx11.h"
+
 Graphics::Graphics(HWND hWnd) 
 {
 
@@ -102,6 +104,8 @@ Graphics::Graphics(HWND hWnd)
     vp.TopLeftX = 0.0f;
     vp.TopLeftY = 0.0f;
     pContext->RSSetViewports(1u, &vp);
+
+    ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 }
 
 

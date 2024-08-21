@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "Timer.h"
+#include "ImGuiManager.h"
 
 class Application
 {
@@ -19,6 +20,7 @@ private:
     void DoFrame();
 
 private:
+    ImGuiManager imgui;
     Window wnd;
     Timer timer;
 
