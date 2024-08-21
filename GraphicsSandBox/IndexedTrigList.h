@@ -1,33 +1,30 @@
 #pragma once
-
+#include <vector>
 #include <DirectXMath.h>
 
-#include <vector>
-
-template <class T>
+template<class T>
 class IndexedTrigList
 {
 public:
     IndexedTrigList() = default;
-    IndexedTrigLsit(std::vector<T> vertices, std::vector<unsigned short> indices)
+    IndexedTrigList(std::vector<T> verts_in, std::vector<unsigned short> indices_in) 
         :
-        vertices(vertices),
-        indices(indices)
+        vertices(std::move(verts_in)),
+        indices(std::move(indices_in))
     {
         assert(vertices.size() > 2);
         assert(indices.size() % 3 == 0);
     }
-
-    void Transform(DirectX::FXMATRIX mat)
+    void Transform(DirectX::FXMMATRIX matrix)
     {
-        for (auto& vert : vertices)
+        for (auto& v : vertices)
         {
-            const DirectX::XMVECTOR position = DirectX::XMLoadFloat3(&vert.pos);
-            DirectX::XMStoreFloat3(&vert.pos, DirectX::XMVector3Transform(pos, mat);
+            const DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&v.pos);
+            DirectX::XMStoreFloat3(	&v.pos, DirectX::XMVector3Transform(pos, matrix));
         }
     }
 
 public:
     std::vector<T> vertices;
-    std::vector<unsigned short> indices
+    std::vector<unsigned short> indices;
 };

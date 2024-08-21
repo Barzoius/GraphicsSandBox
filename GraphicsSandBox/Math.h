@@ -62,11 +62,11 @@ constexpr QUADRANT get_quadrant(T angle)
 
     if (angle > (T)360.0)
     {
-        normalizedAngle = angle - (T)360.0
+        normalizedAngle = angle - (T)360.0;
     }
     else if (angle < (T)0)
     {
-        normalizedAngle = angle + (T)360.0
+        normalizedAngle = angle + (T)360.0;
     }
     else
     {
@@ -74,7 +74,7 @@ constexpr QUADRANT get_quadrant(T angle)
     }
 
 
-    if (normalizedAngle == 0 {
+    if (normalizedAngle == 0) {
         return POSITIVE_X_AXIS;
     }
     else if (normalizedAngle == 360) {

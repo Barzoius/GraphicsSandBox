@@ -55,7 +55,7 @@ public:
                 const float xPos = float(x) * xDivisionSize;
 
                 /// The postion values of the vertex relative to the origin
-                const auto relativeVertex = DirectX:XMVectorSet(xPos, yPos, 0.0f, 0.0f);
+                const auto relativeVertex = DirectX::XMVectorSet(xPos, yPos, 0.0f, 0.0f);
 
                 /// The absoulte postion values of the vertex in 3D Space
                 const auto vertex = DirectX::XMVectorAdd(bottomLeft, relativeVertex);
