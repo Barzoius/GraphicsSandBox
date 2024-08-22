@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cuboid.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="ErrorInfoManager.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableObjects.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="CRTPDrawable.h" />
     <ClInclude Include="Cube.h" />

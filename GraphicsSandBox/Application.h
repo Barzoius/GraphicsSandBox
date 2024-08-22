@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "Timer.h"
 #include "ImGuiManager.h"
+#include "Camera.h"
 
 class Application
 {
@@ -23,6 +24,8 @@ private:
     ImGuiManager imgui;
     Window wnd;
     Timer timer;
+    Camera camera;
+
     float speedFactor = 1.0f;
     bool show_imgui_demo = true;
 

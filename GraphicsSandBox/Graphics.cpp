@@ -431,3 +431,13 @@ DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 {
     return projection;
 }
+
+void Graphics::SetCamera(DirectX::FXMMATRIX pCamera) noexcept
+{
+    camera = pCamera;
+}
+
+DirectX::XMMATRIX Graphics::GetCamera()  const noexcept
+{
+    return camera;
+}
