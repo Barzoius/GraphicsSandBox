@@ -6,8 +6,7 @@
 #include "Sheet.h"
 
 #include "ImGui/imgui.h"
-#include "ImGui/imgui_impl_win32.h"
-#include "ImGui/imgui_impl_dx11.h"
+
 
 #include <sstream>
 #include <memory>
@@ -168,16 +167,9 @@ Application::~Application()
 
 void Application::DoFrame()
 {
-    const float t = timer.Peek();
-    std::ostringstream oss;
-    oss << "TimePassed: " 
-        << std::setprecision(1) 
-        << std::fixed << t << " s" 
-        << std::endl;
-    wnd.SetTitle(oss.str());
+    const auto dt = timer.Mark() * speedFactor;
 
-    auto dt = timer.Mark();
-    wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+    wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f );
     //for (auto& b : cuboids)
     //{
     //    b->Update(dt);
@@ -190,19 +182,14 @@ void Application::DoFrame()
         d->Draw(wnd.Gfx());
     }
 
-
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
-    static bool demo = true;
-    if (demo)
+    static char buffer[1024];
+    if (ImGui::Begin("Simulation Stats"))
     {
-        ImGui::ShowDemoWindow(&demo);
+        ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 4.0f);
+        ImGui::Text("Average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::InputText("...", buffer, sizeof(buffer));
     }
-
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    ImGui::End();
 
     wnd.Gfx().EndFrame();
 }

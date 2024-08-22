@@ -73,6 +73,7 @@ public:
     ~Graphics() = default;
 
     void EndFrame();
+    void BeginFrame(float R, float G, float B) noexcept;
     void ClearBuffer(float red, float green, float blue) noexcept;
 
     void DrawTestTriangle(float angle, float x, float y);
@@ -82,9 +83,12 @@ public:
 
     void DrawTrig();
    
+    void EnableImgui() noexcept;
+    void DisableImgui() noexcept;
+    bool IsImguiEnabled() const noexcept;
 
 private:
-
+    bool imguiEnabled = true;
     DirectX::XMMATRIX projection;
 
 #ifndef NDEBUG

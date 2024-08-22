@@ -23,6 +23,8 @@ private:
     ImGuiManager imgui;
     Window wnd;
     Timer timer;
+    float speedFactor = 1.0f;
+    bool show_imgui_demo = true;
 
     std::vector<std::unique_ptr<class Cuboid>> cuboids;
 
