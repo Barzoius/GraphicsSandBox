@@ -125,6 +125,7 @@ public:
     void Save(const std::string& filename) const;
     void Copy(const Surface& src) noexcept;
 
+    static Surface CreateHeightMap(unsigned int width, unsigned int height);
 private:
     Surface(unsigned int width, unsigned int height, std::unique_ptr<Color[]> pBufferParam) noexcept;
 

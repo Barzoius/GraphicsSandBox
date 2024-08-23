@@ -118,7 +118,6 @@ Surface Surface::FromFile(const std::string& sourceFile)
     height = bitmap.GetHeight();
     pBuffer = std::make_unique<Color[]>(width * height);
 
-    pBuffer = std::make_unique<Color[]>(width * height);
 
     for (unsigned int y = 0; y < height; y++)
     {
@@ -237,4 +236,27 @@ const char* Surface::Exception::GetType() const noexcept
 const std::string& Surface::Exception::GetNote() const noexcept
 {
     return note;
+}
+
+#include <random>
+
+Surface Surface::CreateHeightMap(unsigned int width, unsigned int height)
+{
+    std::unique_ptr<Color[]> pBuffer = nullptr;
+    pBuffer = std::make_unique<Color[]>(width * height);
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 255);
+
+    
+    for (unsigned int i = 0; i < width * height; ++i)
+    {
+        int grayValue = dis(gen);
+        pBuffer[i] = Color(grayValue, grayValue, grayValue); 
+    }
+
+    Surface S =  Surface(width, height, std::move(pBuffer));
+    S.Save("Resources\\HeightMaps\\IMG??.bmp");
+    return S;
 }

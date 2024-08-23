@@ -12,6 +12,8 @@
 #include <memory>
 #include <algorithm>
 
+#include "Ball.h"
+
 GDIPManager gdipm;
 
 Application::Application() : wnd( 800, 600, "Window" ) 
@@ -28,15 +30,19 @@ Application::Application() : wnd( 800, 600, "Window" )
             switch (typedist(rng))
             {
             case 0:
-                //return std::make_unique<Pyramid>(
-                //    gfx, rng, adist, ddist,
-                //    odist, rdist
-                //);
+                return std::make_unique<Ball>(
+                    gfx, rng, adist, ddist,
+                    odist, rdist, latdist, longdist
+                );
             case 1:
                 //return std::make_unique<Cuboid>(
                 //    gfx, rng, adist, ddist,
                 //    odist, rdist, bdist
                 //);
+                return std::make_unique<Cuboid>(
+                    gfx, rng, adist,
+                    ddist, odist, rdist
+                );
             case 2:
                 //return std::make_unique<Melon>(
                 //    gfx, rng, adist, ddist,
@@ -69,6 +75,7 @@ Application::Application() : wnd( 800, 600, "Window" )
 
 
     const auto s = Surface::FromFile("Resources\\Images\\RobloxChadFace.png");
+    //Surface::CreateHeightMap(400, 400);
 
     std::mt19937 rng(std::random_device{}());
     std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
