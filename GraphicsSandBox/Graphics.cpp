@@ -101,8 +101,8 @@ Graphics::Graphics(HWND hWnd)
     rasterDesc.DepthClipEnable = true;
 
     ID3D11RasterizerState* wireframeRasterState;
-    //pDevice->CreateRasterizerState(&rasterDesc, &wireframeRasterState);
-    //pContext->RSSetState(wireframeRasterState);
+    pDevice->CreateRasterizerState(&rasterDesc, &wireframeRasterState);
+    pContext->RSSetState(wireframeRasterState);
 
     // bind depth stensil view to OM
     pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());

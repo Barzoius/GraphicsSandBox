@@ -132,6 +132,9 @@
     <ClCompile Include="Doughnut.cpp">
       <Filter>Source Files\Drawables</Filter>
     </ClCompile>
+    <ClCompile Include="Pipe.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModWin.h">
@@ -282,6 +285,9 @@
       <Filter>Header Files\Drawables</Filter>
     </ClInclude>
     <ClInclude Include="Doughnut.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.h">
       <Filter>Header Files\Drawables</Filter>
     </ClInclude>
   </ItemGroup>

@@ -169,6 +169,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="ModException.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PixelSahder.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Sheet.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="ModException.h" />
     <ClInclude Include="ModWin.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Pipe.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Prism.h" />

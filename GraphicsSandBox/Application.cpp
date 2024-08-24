@@ -5,6 +5,7 @@
 #include "GDIPManager.h"
 #include "Sheet.h"
 #include "Torus.h"
+#include "Pipe.h"
 
 #include "ImGui/imgui.h"
 
@@ -190,8 +191,11 @@ void Application::DoFrame()
     //Ball B(wnd.Gfx());
     //B.Draw(wnd.Gfx());
 
-    Sheet P(wnd.Gfx());
-    P.Draw(wnd.Gfx());
+    //Sheet P(wnd.Gfx());
+    //P.Draw(wnd.Gfx());
+
+    Pipe pipe(wnd.Gfx());
+    pipe.Draw(wnd.Gfx());
 
     //Cuboid C(wnd.Gfx());
     //C.Draw(wnd.Gfx());

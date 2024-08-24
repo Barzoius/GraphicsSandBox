@@ -16,6 +16,18 @@
 |  ![](GraphicsSandBox/Resources/ForREADME/SolidPlane.png) | ![](GraphicsSandBox/Resources/ForREADME/WirePlane.png) |
 
 
+### Prism
+| Solid |  Wireframe |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidPrism.png) | ![](GraphicsSandBox/Resources/ForREADME/WirePrism.png) |
+
+
+### Cylinder
+| Solid |  Wireframe |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidCylinder.png) | ![](GraphicsSandBox/Resources/ForREADME/WireCylinder.png) |
+
+
 ### UV Sphere
 | Solid |  Wireframe |
 |---|---|
