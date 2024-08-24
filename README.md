@@ -5,9 +5,9 @@
 ### 3D Primitives
 
 #### Cube
-| Solid |  Wireframe |
-|---|---|
-|  ![](GraphicsSandBox/GraphicsSandBox\Resources\ForREADME\SolidCube.png) | ![](GraphicsSandBox\Resources\ForREADME\WireCube.png) |
+| Solid |
+|---|
+|  ![](GraphicsSandBox/GraphicsSandBox\Resources\ForREADME\SolidCube.png)  |
 
 
 #### Plane
