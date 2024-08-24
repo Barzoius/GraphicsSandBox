@@ -7,7 +7,7 @@
 ### Cube
 | Solid |  Wireframe |
 |---|---|
-|  ![](GraphicsSandBox\Resources\ForREADME\SolidCube.png) | ![](GraphicsSandBox\Resources\ForREADME\WireCube.png) |
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidCube.png) | ![](GraphicsSandBox\Resources\ForREADME\WireCube.png) |
 
 
 ### Plane
