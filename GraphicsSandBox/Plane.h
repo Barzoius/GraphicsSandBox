@@ -103,6 +103,6 @@ public:
     template<typename V>
     static IndexedTrigList<V> Make()
     {
-        return MakeTesselated<V>(1, 1);
+        return MakeTesselated<V>(8, 8);
     }
 };

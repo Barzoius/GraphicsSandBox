@@ -279,7 +279,7 @@ public:
     template<typename V>
     static IndexedTrigList<V> Make()
     {
-        return MakeUVSphere<V>(32, 64);
+        return MakeUVSphere<V>(32, 32);
        // return MakeIcoSphere<V>();
     }
 };

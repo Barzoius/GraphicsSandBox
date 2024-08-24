@@ -93,6 +93,17 @@ Graphics::Graphics(HWND hWnd)
         pDepthStencil.Get(), &descDSV, &pDSV
     ));
 
+    D3D11_RASTERIZER_DESC rasterDesc;
+    ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
+    rasterDesc.FillMode = D3D11_FILL_WIREFRAME;  // Set to wireframe
+    rasterDesc.CullMode = D3D11_CULL_BACK;
+    rasterDesc.FrontCounterClockwise = false;
+    rasterDesc.DepthClipEnable = true;
+
+    ID3D11RasterizerState* wireframeRasterState;
+    //pDevice->CreateRasterizerState(&rasterDesc, &wireframeRasterState);
+    //pContext->RSSetState(wireframeRasterState);
+
     // bind depth stensil view to OM
     pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
 

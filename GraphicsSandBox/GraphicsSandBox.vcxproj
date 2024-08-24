@@ -152,6 +152,7 @@
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cuboid.cpp" />
+    <ClCompile Include="Doughnut.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="ErrorInfoManager.cpp" />
     <ClCompile Include="GDIPManager.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cuboid.h" />
     <ClInclude Include="ConstantBuffers.h" />
+    <ClInclude Include="Doughnut.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="ErrorInfoManager.h" />
     <ClInclude Include="GDIPManager.h" />

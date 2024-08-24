@@ -4,6 +4,7 @@
 #include "Surface.h"
 #include "GDIPManager.h"
 #include "Sheet.h"
+#include "Torus.h"
 
 #include "ImGui/imgui.h"
 
@@ -13,6 +14,7 @@
 #include <algorithm>
 
 #include "Ball.h"
+#include "Doughnut.h"
 
 GDIPManager gdipm;
 
@@ -35,10 +37,7 @@ Application::Application() : wnd( 800, 600, "Window" )
                     odist, rdist, latdist, longdist
                 );
             case 1:
-                //return std::make_unique<Cuboid>(
-                //    gfx, rng, adist, ddist,
-                //    odist, rdist, bdist
-                //);
+
                 return std::make_unique<Cuboid>(
                     gfx, rng, adist,
                     ddist, odist, rdist
@@ -73,23 +72,25 @@ Application::Application() : wnd( 800, 600, "Window" )
     std::generate_n(std::back_inserter(drawables), nDrawables, f);
 
 
-
-    const auto s = Surface::FromFile("Resources\\Images\\RobloxChadFace.png");
-    //Surface::CreateHeightMap(400, 400);
-
     std::mt19937 rng(std::random_device{}());
     std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
     std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
     std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
     std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
 
-    for (auto i = 0; i < 80; i++)
+    for (auto i = 0; i < 1; i++)
     {
         cuboids.push_back(std::make_unique<Cuboid>(
             wnd.Gfx(), rng, adist,
             ddist, odist, rdist
         ));
     }
+
+
+
+
+    const auto s = Surface::FromFile("Resources\\Images\\RobloxChadFace.png");
+    //Surface::CreateHeightMap(400, 400);
 
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
    
@@ -176,20 +177,35 @@ void Application::DoFrame()
 {
     const auto dt = timer.Mark() * speedFactor;
 
-    wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f );
+    wnd.Gfx().BeginFrame(0.91f, 0.64f, 0.09f );
     wnd.Gfx().SetCamera(camera.GetMatrix());
 
-    //for (auto& b : cuboids)
+ //   for (auto& b : cuboids)
+ //{
+ //    b->Update(dt);
+ //    b->Draw(wnd.Gfx());
+ //}
+
+
+    //Ball B(wnd.Gfx());
+    //B.Draw(wnd.Gfx());
+
+    Sheet P(wnd.Gfx());
+    P.Draw(wnd.Gfx());
+
+    //Cuboid C(wnd.Gfx());
+    //C.Draw(wnd.Gfx());
+
+    //Doughnut D(wnd.Gfx());
+    //D.Draw(wnd.Gfx());
+
+    //for (auto& d : drawables)
     //{
-    //    b->Update(dt);
-    //    b->Draw(wnd.Gfx());
+    //    //d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+    //    d->Draw(wnd.Gfx());
     //}
 
-    for (auto& d : drawables)
-    {
-        d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-        d->Draw(wnd.Gfx());
-    }
+
 
     static char buffer[1024];
     if (ImGui::Begin("Simulation Stats"))

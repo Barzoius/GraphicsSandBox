@@ -1,15 +1,13 @@
-#include "Ball.h"
+#include "Doughnut.h"
 #include "BindableObjects.h"
-#include "Sphere.h"
+#include "Torus.h"
 #include "Surface.h"
 #include "Texture.h"
 #include "Sampler.h"
 
-
 #include "GFX_MACROS.h"
 
-
-Ball::Ball(Graphics& gfx,
+Doughnut::Doughnut(Graphics& gfx,
 	std::mt19937& rng,
 	std::uniform_real_distribution<float>& adist,
 	std::uniform_real_distribution<float>& ddist,
@@ -50,18 +48,18 @@ Ball::Ball(Graphics& gfx,
 				float a;
 			} face_colors[8];
 		};
+
 		const PixelShaderConstants cb2 =
 		{
 			{
-				{ 0.18f,0.28f,0.42f },
-				{ 0.682f,0.729f,0.765f },
-				{ 0.43f,0.15f,0.5f },
-				{ 0.42f,0.10f,0.29f },
-				{ 0.31f,0.41f,0.10f },
-				{ 0.09f,0.24f,1.38f },
-				{ 0.98f,0.41f,0.0f },
-				{ 0.635f,1.0f,0.145f },
-
+				{ 1.0f,1.0f,1.0f },
+				{ 0.65f,0.16f,0.16f },
+				{ 0.0f,1.0f,0.0f },
+				{ 1.0f,1.0f,0.0f },
+				{ 0.0f,0.0f,1.0f },
+				{ 1.0f,0.0f,1.0f },
+				{ 0.0f,1.0f,1.0f },
+				{ 0.0f,0.0f,0.0f },
 			}
 		};
 
@@ -82,7 +80,7 @@ Ball::Ball(Graphics& gfx,
 	};
 
 
-	auto model = Sphere::Make<Vertex>();
+	auto model = Torus::Make<Vertex>();
 
 	model.Transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
 
@@ -93,7 +91,7 @@ Ball::Ball(Graphics& gfx,
 	AddBind(std::make_unique<TransformCbuf>(gfx, *this));
 }
 
-void Ball::Update(float dt) noexcept
+void Doughnut::Update(float dt) noexcept
 {
 	roll += droll * dt;
 	pitch += dpitch * dt;
@@ -103,7 +101,7 @@ void Ball::Update(float dt) noexcept
 	chi += dchi * dt;
 }
 
-DirectX::XMMATRIX Ball::GetTransformXM() const noexcept
+DirectX::XMMATRIX Doughnut::GetTransformXM() const noexcept
 {
 	namespace dx = DirectX;
 	return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
@@ -112,10 +110,11 @@ DirectX::XMMATRIX Ball::GetTransformXM() const noexcept
 }
 
 
-Ball::Ball(Graphics& gfx)
-{
-	namespace dx = DirectX;
 
+
+Doughnut::Doughnut(Graphics& gfx)
+{
+	
 	if (!IsStaticInitialized())
 	{
 
@@ -138,14 +137,14 @@ Ball::Ball(Graphics& gfx)
 		const PixelShaderConstants cb2 =
 		{
 			{
-				{ 0.0f,0.0f,0.0f },
 				{ 1.0f,1.0f,1.0f },
-				{ 0.43f,0.15f,0.5f },
-				{ 0.42f,0.10f,0.29f },
-				{ 0.31f,0.41f,0.10f },
-				{ 0.09f,0.24f,1.38f },
-				{ 0.98f,0.41f,0.0f },
-				{ 0.635f,1.0f,0.145f },
+				{ 1.0f,0.0f,0.0f },
+				{ 0.0f,1.0f,0.0f },
+				{ 1.0f,1.0f,0.0f },
+				{ 0.0f,0.0f,1.0f },
+				{ 1.0f,0.0f,1.0f },
+				{ 0.0f,1.0f,1.0f },
+				{ 0.0f,0.0f,0.0f },
 			}
 		};
 
@@ -162,13 +161,13 @@ Ball::Ball(Graphics& gfx)
 
 	struct Vertex
 	{
-		dx::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 pos;
 	};
 
 
-	auto model = Sphere::Make<Vertex>();
+	auto model = Torus::Make<Vertex>();
 
-	//model.Transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
+	model.Transform(DirectX::XMMatrixScaling(1.0f, 1.0f, 1.2f));
 
 	AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 

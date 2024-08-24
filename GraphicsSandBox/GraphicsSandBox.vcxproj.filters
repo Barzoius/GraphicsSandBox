@@ -129,6 +129,9 @@
     <ClCompile Include="Ball.cpp">
       <Filter>Source Files\Drawables</Filter>
     </ClCompile>
+    <ClCompile Include="Doughnut.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModWin.h">
@@ -276,6 +279,9 @@
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Ball.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Doughnut.h">
       <Filter>Header Files\Drawables</Filter>
     </ClInclude>
   </ItemGroup>
