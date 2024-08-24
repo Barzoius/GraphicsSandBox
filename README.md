@@ -7,24 +7,23 @@
 ### Cube
 | Solid |  Wireframe |
 |---|---|
-|  ![](GraphicsSandBox/Resources/ForREADME/SolidCube.png) | ![](GraphicsSandBox\Resources\ForREADME\WireCube.png) |
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidCube.png) | ![](GraphicsSandBox/Resources/ForREADME/WireCube.png) |
 
 
 ### Plane
 | Solid |  Wireframe |
 |---|---|
-|  ![](GraphicsSandBox\Resources\ForREADME\SolidPlane.png) | ![](GraphicsSandBox\Resources\ForREADME\WirePlane.png) |
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidPlane.png) | ![](GraphicsSandBox/Resources/ForREADME/WirePlane.png) |
 
 
 ### UV Sphere
 | Solid |  Wireframe |
 |---|---|
-|  ![](GraphicsSandBox\Resources\ForREADME\SolidUVSphere.png) | ![](GraphicsSandBox\Resources\ForREADME\WireUVSphere.png) |
-
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidUVSphere.png) | ![](GraphicsSandBox/Resources/ForREADME/WireUVSphere.png) |
 
 
 ### Torus
 | Solid |  Wireframe |
 |---|---|
-|  ![](GraphicsSandBox\Resources\ForREADME\SolidTorus.png) | ![](GraphicsSandBox\Resources\ForREADME\WireTorus.png) |
+|  ![](GraphicsSandBox/Resources/ForREADME/SolidTorus.png) | ![](GraphicsSandBox/Resources/ForREADME/WireTorus.png) |
 
