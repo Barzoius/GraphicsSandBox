@@ -138,5 +138,5 @@ public:
     {
         return MakeTesselated<V>(3);
     }
-    
+
 };

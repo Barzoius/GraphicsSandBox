@@ -9,7 +9,8 @@ public:
         std::uniform_real_distribution<float>& adist,
         std::uniform_real_distribution<float>& ddist,
         std::uniform_real_distribution<float>& odist,
-        std::uniform_real_distribution<float>& rdist);
+        std::uniform_real_distribution<float>& rdist,
+        std::uniform_real_distribution<float>& bdist);
 
     Cuboid(Graphics& gfx);
 
@@ -35,5 +36,7 @@ private:
     float dtheta;
     float dphi;
     float dchi;
+
+    DirectX::XMFLOAT3X3 mt;
 }; 
 

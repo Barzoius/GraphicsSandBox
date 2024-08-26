@@ -3,9 +3,7 @@
 #include "Math.h"
 #include "Surface.h"
 #include "GDIPManager.h"
-#include "Sheet.h"
 #include "Torus.h"
-#include "Pipe.h"
 
 #include "ImGui/imgui.h"
 
@@ -16,10 +14,12 @@
 
 #include "Ball.h"
 #include "Doughnut.h"
+#include "Sheet.h"
+#include "Pipe.h"
 
 GDIPManager gdipm;
 
-Application::Application() : wnd( 800, 600, "Window" ) 
+Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
 {
     class Factory
     {
@@ -30,30 +30,11 @@ Application::Application() : wnd( 800, 600, "Window" )
         {}
         std::unique_ptr<Drawable> operator()()
         {
-            switch (typedist(rng))
-            {
-            case 0:
-                return std::make_unique<Ball>(
-                    gfx, rng, adist, ddist,
-                    odist, rdist, latdist, longdist
-                );
-            case 1:
-
-                return std::make_unique<Cuboid>(
-                    gfx, rng, adist,
-                    ddist, odist, rdist
-                );
-            case 2:
-                //return std::make_unique<Melon>(
-                //    gfx, rng, adist, ddist,
-                //    odist, rdist, longdist, latdist
-                //);
-            case 3:
-                return std::make_unique<Sheet>(gfx, rng, adist, ddist, odist, rdist);
-            default:
-                assert(false && "bad drawable type in factory");
-                return {};
-            }
+         
+            return std::make_unique<Cuboid>(
+                gfx, rng, adist, ddist,
+                odist, rdist, bdist
+            );
         }
     private:
         Graphics& gfx;
@@ -71,27 +52,6 @@ Application::Application() : wnd( 800, 600, "Window" )
     Factory f(wnd.Gfx());
     drawables.reserve(nDrawables);
     std::generate_n(std::back_inserter(drawables), nDrawables, f);
-
-
-    std::mt19937 rng(std::random_device{}());
-    std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
-    std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
-    std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
-    std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
-
-    for (auto i = 0; i < 1; i++)
-    {
-        cuboids.push_back(std::make_unique<Cuboid>(
-            wnd.Gfx(), rng, adist,
-            ddist, odist, rdist
-        ));
-    }
-
-
-
-
-    const auto s = Surface::FromFile("Resources\\Images\\RobloxChadFace.png");
-    //Surface::CreateHeightMap(400, 400);
 
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
    
@@ -181,33 +141,15 @@ void Application::DoFrame()
     wnd.Gfx().BeginFrame(0.91f, 0.64f, 0.09f );
     wnd.Gfx().SetCamera(camera.GetMatrix());
 
- //   for (auto& b : cuboids)
- //{
- //    b->Update(dt);
- //    b->Draw(wnd.Gfx());
- //}
+    light.Bind(wnd.Gfx());
 
+    for (auto& d : drawables)
+    {
+        d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+        d->Draw(wnd.Gfx());
+    }
 
-    //Ball B(wnd.Gfx());
-    //B.Draw(wnd.Gfx());
-
-    //Sheet P(wnd.Gfx());
-    //P.Draw(wnd.Gfx());
-
-    Pipe pipe(wnd.Gfx());
-    pipe.Draw(wnd.Gfx());
-
-    //Cuboid C(wnd.Gfx());
-    //C.Draw(wnd.Gfx());
-
-    //Doughnut D(wnd.Gfx());
-    //D.Draw(wnd.Gfx());
-
-    //for (auto& d : drawables)
-    //{
-    //    //d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-    //    d->Draw(wnd.Gfx());
-    //}
+    light.Draw(wnd.Gfx());
 
 
 
@@ -220,6 +162,7 @@ void Application::DoFrame()
     }
     ImGui::End();
     camera.ShowControlWND();
+    light.CreateControlWindow();
 
     wnd.Gfx().EndFrame();
 }

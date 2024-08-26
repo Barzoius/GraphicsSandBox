@@ -5,6 +5,9 @@
 #include "ImGuiManager.h"
 #include "Camera.h"
 
+
+#include "PointLight.h"
+
 class Application
 {
 public:
@@ -25,6 +28,7 @@ private:
     Window wnd;
     Timer timer;
     Camera camera;
+    PointLight light;
 
     float speedFactor = 1.0f;
     bool show_imgui_demo = true;
