@@ -30,6 +30,7 @@ public:
         using namespace DirectX;
 
         assert(indices.size() % 3 == 0 && indices.size() > 0);
+
         for (size_t i = 0; i < indices.size(); i += 3)
         {
             auto& v0 = vertices[indices[i]];

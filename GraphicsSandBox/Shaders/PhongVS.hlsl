@@ -13,7 +13,7 @@ struct VSOut
 };
 
 
-VSOut main( float3 pos : POSITION, float3 n : Normal )
+VSOut main( float3 pos : Position, float3 n : Normal )
 {
     VSOut vso;
     vso.worldPos = (float3)mul(float4(pos, 1.0f), model);
