@@ -31,9 +31,10 @@ Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
         std::unique_ptr<Drawable> operator()()
         {
          
+            const DirectX::XMFLOAT3 material = { cdist(rng), cdist(rng), cdist(rng) };
             return std::make_unique<Cuboid>(
                 gfx, rng, adist, ddist,
-                odist, rdist, bdist
+                odist, rdist, bdist, material
             );
         }
     private:
@@ -44,6 +45,7 @@ Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
         std::uniform_real_distribution<float> odist{ 0.0f,FPI * 0.08f };
         std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
         std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
+        std::uniform_real_distribution<float> cdist{0.0f, 1.0f};
     };
 
     drawables.reserve(nDrawables);
