@@ -302,6 +302,9 @@
     <ClInclude Include="SolidSphere.h">
       <Filter>Header Files\Drawables</Filter>
     </ClInclude>
+    <ClInclude Include="TestObject.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Users\mecca\Desktop\images-removebg-preview.png">

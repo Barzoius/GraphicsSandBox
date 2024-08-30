@@ -13,16 +13,7 @@ Cuboid::Cuboid(Graphics& gfx,
     std::uniform_real_distribution<float>& bdist,
     DirectX::XMFLOAT3 material)
     :
-    r(rdist(rng)),
-    droll(ddist(rng)),
-    dpitch(ddist(rng)),
-    dyaw(ddist(rng)),
-    dphi(odist(rng)),
-    dtheta(odist(rng)),
-    dchi(odist(rng)),
-    chi(adist(rng)),
-    theta(adist(rng)),
-    phi(adist(rng))
+    TestObject(gfx, rng, adist, ddist, odist, rdist)
 {
     if (!IsStaticInitialized())
     {
@@ -67,8 +58,10 @@ Cuboid::Cuboid(Graphics& gfx,
 
         struct PSMaterialConstant
         {
-            DirectX::XMFLOAT3 color;
-            float padding;
+            alignas(16) DirectX::XMFLOAT3 color;
+            float specularIntensity = 0.6f;
+            float specularPower = 30.0f;
+            float padding[2];
         }colorConst;
 
         colorConst.color = material;
@@ -82,20 +75,7 @@ Cuboid::Cuboid(Graphics& gfx,
 
 
 
-void Cuboid::Update(float dt) noexcept
-{
-    roll += droll * dt;
-    pitch += dpitch * dt;
-    yaw += dyaw * dt;
-    theta += dtheta * dt;
-    phi += dphi * dt;
-    chi += dchi * dt;
-}
-
 DirectX::XMMATRIX Cuboid::GetTransformXM() const noexcept
 {
-    return DirectX::XMLoadFloat3x3(&mt) * 
-        DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-        DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
-        DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi);
+    return DirectX::XMLoadFloat3x3(&mt) * TestObject::GetTransformXM();
 }

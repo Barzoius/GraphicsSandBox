@@ -140,7 +140,7 @@ void Application::DoFrame()
     wnd.Gfx().BeginFrame(0.0f, 0.0f, 0.109f);
     wnd.Gfx().SetCamera(camera.GetMatrix());
 
-    light.Bind(wnd.Gfx());
+    light.Bind(wnd.Gfx(), camera.GetMatrix());
 
     for (auto& d : drawables)
     {
@@ -154,7 +154,7 @@ void Application::DoFrame()
 
     if (ImGui::Begin("Simulation Speed"))
     {
-        ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 4.0f);
+        ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 6.0f, "%.4f", 3.2f);
         ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING (hold spacebar to pause)");
     }
