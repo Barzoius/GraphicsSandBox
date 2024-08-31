@@ -23,6 +23,10 @@ public:
         phi(adist(rng))
     {}
 
+
+    TestObject(Graphics& gfx)
+    {}
+
     void Update(float dt) noexcept
     {
         roll += droll * dt;

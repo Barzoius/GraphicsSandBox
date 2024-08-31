@@ -2,7 +2,7 @@
 
 ## Screenshots
 
-### 3D Primitives
+## 3D Primitives
 
 ### Cube
 | Solid |  Wireframe |
@@ -39,3 +39,11 @@
 |---|---|
 |  ![](GraphicsSandBox/Resources/ForREADME/SolidTorus.png) | ![](GraphicsSandBox/Resources/ForREADME/WireTorus.png) |
 
+
+<br/>
+
+## Assimp Model Loading
+
+| Solid |  Wireframe |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/suzanneSolid.png) | ![](GraphicsSandBox/Resources/ForREADME/suzanneWire.png) |

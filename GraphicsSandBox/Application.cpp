@@ -4,6 +4,7 @@
 #include "Surface.h"
 #include "GDIPManager.h"
 #include "Torus.h"
+#include "TestLoadedModel.h"
 
 #include "ImGui/imgui.h"
 #include "assimp/Importer.hpp"
@@ -23,10 +24,6 @@ GDIPManager gdipm;
 
 Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
 {
-    Assimp::Importer imp;
-    auto model = imp.ReadFile("Resources\\Models\\suzanne.obj",
-        aiProcess_Triangulate |
-        aiProcess_JoinIdenticalVertices);
 
     class Factory
     {
@@ -39,10 +36,16 @@ Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
         {
          
             const DirectX::XMFLOAT3 material = { cdist(rng), cdist(rng), cdist(rng) };
-            return std::make_unique<Cuboid>(
-                gfx, rng, adist, ddist,
-                odist, rdist, bdist, material
-            );
+            //return std::make_unique<Cuboid>(
+            //    gfx, rng, adist, ddist,
+            //    odist, rdist, bdist, material
+            //);
+
+            //return std::make_unique<TestLoadedModel>(
+            //    gfx, rng, adist, ddist,
+            //    odist, rdist, material,1.5
+            //);
+            return nullptr;
         }
     private:
         Graphics& gfx;
@@ -143,17 +146,21 @@ void Application::DoFrame()
 {
     const auto dt = timer.Mark() * speedFactor;
 
-    //wnd.Gfx().BeginFrame(0.91f, 0.64f, 0.09f ); //nice yellow
-    wnd.Gfx().BeginFrame(0.0f, 0.0f, 0.109f);
+    wnd.Gfx().BeginFrame(0.91f, 0.64f, 0.09f ); //nice yellow
+    //wnd.Gfx().BeginFrame(0.0f, 0.0f, 0.109f);
     wnd.Gfx().SetCamera(camera.GetMatrix());
 
     light.Bind(wnd.Gfx(), camera.GetMatrix());
 
-    for (auto& d : drawables)
-    {
-        d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-        d->Draw(wnd.Gfx());
-    }
+    //for (auto& d : drawables)
+    //{
+    //    d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
+    //    d->Draw(wnd.Gfx());
+    //}
+
+    const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
+    auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
+    model->Draw(wnd.Gfx());
 
     light.Draw(wnd.Gfx());
 
