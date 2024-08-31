@@ -6,7 +6,9 @@
 #include "Torus.h"
 
 #include "ImGui/imgui.h"
-
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 
 #include <sstream>
 #include <memory>
@@ -21,6 +23,11 @@ GDIPManager gdipm;
 
 Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
 {
+    Assimp::Importer imp;
+    auto model = imp.ReadFile("Resources\\Models\\suzanne.obj",
+        aiProcess_Triangulate |
+        aiProcess_JoinIdenticalVertices);
+
     class Factory
     {
     public:

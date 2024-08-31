@@ -329,4 +329,7 @@
     <FxCompile Include="Shaders\SolidPS.hlsl" />
     <FxCompile Include="Shaders\SolidVS.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Object Include="Resources\Models\suzanne.obj" />
+  </ItemGroup>
 </Project>
