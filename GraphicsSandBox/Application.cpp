@@ -20,10 +20,15 @@
 #include "Sheet.h"
 #include "Pipe.h"
 
+#include "VertexSystem.h"
+
 GDIPManager gdipm;
+
+using namespace DVS;
 
 Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
 {
+
 
     class Factory
     {
