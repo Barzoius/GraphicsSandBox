@@ -14,11 +14,14 @@
 #include <random>
 #include "sstream"
 
-
+namespace Bind
+{
+    class Bindable;
+}
 
 class Graphics
 {
-    friend class Bindable;
+    friend Bind:: Bindable;
 public:
     class Exception : public ModException
     {

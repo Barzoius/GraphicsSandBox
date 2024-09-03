@@ -13,13 +13,13 @@ protected:
         return !staticBinds.empty();
     }
 
-    void AddStaticBind(std::unique_ptr<Bindable> bind) noexcept
+    void AddStaticBind(std::unique_ptr<Bind::Bindable> bind) noexcept
     {
-        assert("Use AddIndexBuffer to bind an index buffer" && typeid(*bind) != typeid(IndexBuffer));
+        assert("Use AddIndexBuffer to bind an index buffer" && typeid(*bind) != typeid(Bind::IndexBuffer));
         staticBinds.push_back(std::move(bind));
     }
 
-    void AddStaticIndexBuffer(std::unique_ptr<IndexBuffer> ibuf) noexcept
+    void AddStaticIndexBuffer(std::unique_ptr<Bind::IndexBuffer> ibuf) noexcept
     {
         assert("Attempt to add a index buffer a second time" && pIndexBuffer == nullptr);
         pIndexBuffer = ibuf.get();
@@ -31,7 +31,7 @@ protected:
         assert("Attempt to add a index buffer a second time" && pIndexBuffer == nullptr);
         for (const auto& b : staticBinds)
         {
-            if (const auto p = dynamic_cast<IndexBuffer*>(b.get()))
+            if (const auto p = dynamic_cast<Bind::IndexBuffer*>(b.get()))
             {
                 pIndexBuffer = p;
                 return;
@@ -41,14 +41,14 @@ protected:
     }
 
 private:
-    const std::vector<std::unique_ptr<Bindable>>& GetStaticBinds() const noexcept override
+    const std::vector<std::unique_ptr<Bind::Bindable>>& GetStaticBinds() const noexcept override
     {
         return staticBinds;
     }
 
 private:
-    static std::vector<std::unique_ptr<Bindable>> staticBinds;
+    static std::vector<std::unique_ptr<Bind::Bindable>> staticBinds;
 };
 
 template<class C>
-std::vector<std::unique_ptr<Bindable>> CRTPDrawable<C>::staticBinds;
+std::vector<std::unique_ptr<Bind::Bindable>> CRTPDrawable<C>::staticBinds;

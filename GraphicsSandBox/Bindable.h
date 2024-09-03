@@ -4,16 +4,19 @@
 #include "Graphics.h"
 #include "ErrorInfoManager.h"
 
-class Bindable
+namespace Bind
 {
-public:
-    virtual void Bind(Graphics& gfx) = 0;
-    virtual ~Bindable() = default;
+    class Bindable
+    {
+    public:
+        virtual void Bind(Graphics& gfx) = 0;
+        virtual ~Bindable() = default;
 
-protected:
+    protected:
 
-    static ID3D11DeviceContext* GetContext(Graphics& gfx) noexcept;
-    static ID3D11Device* GetDevice(Graphics& gfx) noexcept;
-    static ErrorInfoManager& GetInfoManager(Graphics& gfx) noexcept;
+        static ID3D11DeviceContext* GetContext(Graphics& gfx) noexcept;
+        static ID3D11Device* GetDevice(Graphics& gfx) noexcept;
+        static ErrorInfoManager& GetInfoManager(Graphics& gfx) noexcept;
 
-};
+    };
+}

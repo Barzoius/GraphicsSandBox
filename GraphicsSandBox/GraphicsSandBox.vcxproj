@@ -187,6 +187,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModException.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Pipe.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableObjects.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="CRTPDrawable.h" />
     <ClInclude Include="Cube.h" />
@@ -237,6 +239,8 @@
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ModException.h" />
     <ClInclude Include="ModWin.h" />
     <ClInclude Include="Mouse.h" />

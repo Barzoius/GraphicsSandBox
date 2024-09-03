@@ -26,17 +26,17 @@ Cuboid::Cuboid(Graphics& gfx,
         auto model = Cube::MakeWithIndependentVertices<Vertex>();
         model.SetNormalsIndependentFlat();
 
-        AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+        AddStaticBind(std::make_unique<Bind::VertexBuffer>(gfx, model.vertices));
 
-        auto pvs = std::make_unique<VertexShader>(gfx, L"PhongVS.cso");
+        auto pvs = std::make_unique<Bind::VertexShader>(gfx, L"PhongVS.cso");
         auto pvsbc = pvs->GetBytecode();
         AddStaticBind(std::move(pvs));
 
 
-        AddStaticBind(std::make_unique<PixelShader>(gfx, L"PhongPS.cso"));
+        AddStaticBind(std::make_unique<Bind::PixelShader>(gfx, L"PhongPS.cso"));
 
     
-        AddStaticIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
+        AddStaticIndexBuffer(std::make_unique<Bind::IndexBuffer>(gfx, model.indices));
 
         
         const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
@@ -46,15 +46,15 @@ Cuboid::Cuboid(Graphics& gfx,
         };
 
         ///LAYOUT
-        AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
+        AddStaticBind(std::make_unique<Bind::InputLayout>(gfx, ied, pvsbc));
 
-        AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+        AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
     }
     else
     {
         SetIndexFromStatic();
     }
-        AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+        AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
 
         struct PSMaterialConstant
         {
@@ -65,7 +65,7 @@ Cuboid::Cuboid(Graphics& gfx,
         }colorConst;
 
         colorConst.color = material;
-        AddBind(std::make_unique<PixelConstantBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
+        AddBind(std::make_unique<Bind::PixelConstantBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
         
         DirectX::XMStoreFloat3x3(
             &mt,

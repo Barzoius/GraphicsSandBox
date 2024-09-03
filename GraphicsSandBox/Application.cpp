@@ -29,43 +29,6 @@ using namespace DVS;
 Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
 {
 
-
-    class Factory
-    {
-    public:
-        Factory(Graphics& gfx)
-            :
-            gfx(gfx)
-        {}
-        std::unique_ptr<Drawable> operator()()
-        {
-         
-            const DirectX::XMFLOAT3 material = { cdist(rng), cdist(rng), cdist(rng) };
-            //return std::make_unique<Cuboid>(
-            //    gfx, rng, adist, ddist,
-            //    odist, rdist, bdist, material
-            //);
-
-            //return std::make_unique<TestLoadedModel>(
-            //    gfx, rng, adist, ddist,
-            //    odist, rdist, material,1.5
-            //);
-            return nullptr;
-        }
-    private:
-        Graphics& gfx;
-        std::mt19937 rng{ std::random_device{}() };
-        std::uniform_real_distribution<float> adist{ 0.0f,FPI * 2.0f };
-        std::uniform_real_distribution<float> ddist{ 0.0f,FPI * 0.5f };
-        std::uniform_real_distribution<float> odist{ 0.0f,FPI * 0.08f };
-        std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
-        std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
-        std::uniform_real_distribution<float> cdist{0.0f, 1.0f};
-    };
-
-    drawables.reserve(nDrawables);
-    std::generate_n(std::back_inserter(drawables), nDrawables, Factory{ wnd.Gfx() });
-
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
    
 }
@@ -143,6 +106,25 @@ int Application::Run()
 
 }
 
+void Application::ShowModelWindow()
+{
+    if (ImGui::Begin("Model"))
+    {
+        using namespace std::string_literals;
+
+        ImGui::Text("Orientation");
+        ImGui::SliderAngle("Roll", &pos.roll, -180.0f, 180.0f);
+        ImGui::SliderAngle("Pitch", &pos.pitch, -180.0f, 180.0f);
+        ImGui::SliderAngle("Yaw", &pos.yaw, -180.0f, 180.0f);
+
+        ImGui::Text("Position");
+        ImGui::SliderFloat("X", &pos.x, -20.0f, 20.0f);
+        ImGui::SliderFloat("Y", &pos.y, -20.0f, 20.0f);
+        ImGui::SliderFloat("Z", &pos.z, -20.0f, 20.0f);
+    }
+    ImGui::End();
+}
+
 Application::~Application()
 {}
 
@@ -157,15 +139,14 @@ void Application::DoFrame()
 
     light.Bind(wnd.Gfx(), camera.GetMatrix());
 
-    //for (auto& d : drawables)
-    //{
-    //    d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-    //    d->Draw(wnd.Gfx());
-    //}
+    const auto transform = DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
+        DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    nano.Draw(wnd.Gfx(), transform);
 
-    const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
-    auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
-    model->Draw(wnd.Gfx());
+
+    //const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
+    //auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
+    //model->Draw(wnd.Gfx());
 
     light.Draw(wnd.Gfx());
 
@@ -180,6 +161,7 @@ void Application::DoFrame()
     ImGui::End();
     camera.ShowControlWND();
     light.CreateControlWindow();
+    ShowModelWindow();
 
     wnd.Gfx().EndFrame();
 }

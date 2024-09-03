@@ -6,6 +6,8 @@
 
 #include "GFX_MACROS.h"
 
+using namespace Bind;
+
 void Drawable::Draw(Graphics& gfx) const noexcept
 {
     for (auto& b : binds)

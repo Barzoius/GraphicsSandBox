@@ -34,11 +34,11 @@ Ball::Ball(Graphics& gfx,
 	if (!IsStaticInitialized())
 	{
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
+		auto pvs = std::make_unique<Bind::VertexShader>(gfx, L"VertexShader.cso");
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
+		AddStaticBind(std::make_unique<Bind::PixelShader>(gfx, L"PixelShader.cso"));
 
 		struct PixelShaderConstants
 		{
@@ -65,15 +65,15 @@ Ball::Ball(Graphics& gfx,
 			}
 		};
 
-		AddStaticBind(std::make_unique<PixelConstantBuffer<PixelShaderConstants>>(gfx, cb2));
+		AddStaticBind(std::make_unique<Bind::PixelConstantBuffer<PixelShaderConstants>>(gfx, cb2));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		};
-		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
+		AddStaticBind(std::make_unique<Bind::InputLayout>(gfx, ied, pvsbc));
 
-		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	}
 
 	struct Vertex
@@ -86,11 +86,11 @@ Ball::Ball(Graphics& gfx,
 
 	model.Transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
 
-	AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+	AddStaticBind(std::make_unique<Bind::VertexBuffer>(gfx, model.vertices));
 
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
+	AddIndexBuffer(std::make_unique<Bind::IndexBuffer>(gfx, model.indices));
 
-	AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+	AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
 }
 
 void Ball::Update(float dt) noexcept
@@ -119,11 +119,11 @@ Ball::Ball(Graphics& gfx)
 	if (!IsStaticInitialized())
 	{
 
-		auto pvs = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
+		auto pvs = std::make_unique<Bind::VertexShader>(gfx, L"VertexShader.cso");
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
+		AddStaticBind(std::make_unique<Bind::PixelShader>(gfx, L"PixelShader.cso"));
 
 		struct PixelShaderConstants
 		{
@@ -149,15 +149,15 @@ Ball::Ball(Graphics& gfx)
 			}
 		};
 
-		AddStaticBind(std::make_unique<PixelConstantBuffer<PixelShaderConstants>>(gfx, cb2));
+		AddStaticBind(std::make_unique<Bind::PixelConstantBuffer<PixelShaderConstants>>(gfx, cb2));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		};
-		AddStaticBind(std::make_unique<InputLayout>(gfx, ied, pvsbc));
+		AddStaticBind(std::make_unique<Bind::InputLayout>(gfx, ied, pvsbc));
 
-		AddStaticBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	}
 
 	struct Vertex
@@ -170,9 +170,9 @@ Ball::Ball(Graphics& gfx)
 
 	//model.Transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
 
-	AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
+	AddStaticBind(std::make_unique<Bind::VertexBuffer>(gfx, model.vertices));
 
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, model.indices));
+	AddIndexBuffer(std::make_unique<Bind::IndexBuffer>(gfx, model.indices));
 
-	AddBind(std::make_unique<TransformCbuf>(gfx, *this));
+	AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
 }
