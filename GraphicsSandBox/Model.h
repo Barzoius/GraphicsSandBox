@@ -130,8 +130,17 @@ private:
 
         for (unsigned int i = 0; i < mesh.mNumVertices; i++)
         {
-            vbuf.EmplaceBack(* reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mVertices[i]),
-                             * reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mNormals[i]));
+            //vbuf.EmplaceBack(* reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mVertices[i]),
+            //                 * reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mNormals[i]));
+        
+            DirectX::XMFLOAT3 scaledVertex = {
+            mesh.mVertices[i].x * 0.2f,
+            mesh.mVertices[i].y * 0.2f,
+            mesh.mVertices[i].z * 0.2f
+            };
+
+            vbuf.EmplaceBack(*reinterpret_cast<DirectX::XMFLOAT3*>(&scaledVertex),
+                *reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mNormals[i]));
         }
 
         std::vector<unsigned short> indices;
