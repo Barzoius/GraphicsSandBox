@@ -106,25 +106,6 @@ int Application::Run()
 
 }
 
-void Application::ShowModelWindow()
-{
-    if (ImGui::Begin("Model"))
-    {
-        using namespace std::string_literals;
-
-        ImGui::Text("Orientation");
-        ImGui::SliderAngle("Roll", &pos.roll, -180.0f, 180.0f);
-        ImGui::SliderAngle("Pitch", &pos.pitch, -180.0f, 180.0f);
-        ImGui::SliderAngle("Yaw", &pos.yaw, -180.0f, 180.0f);
-
-        ImGui::Text("Position");
-        ImGui::SliderFloat("X", &pos.x, -20.0f, 20.0f);
-        ImGui::SliderFloat("Y", &pos.y, -20.0f, 20.0f);
-        ImGui::SliderFloat("Z", &pos.z, -20.0f, 20.0f);
-    }
-    ImGui::End();
-}
-
 Application::~Application()
 {}
 
@@ -134,14 +115,14 @@ void Application::DoFrame()
     const auto dt = timer.Mark() * speedFactor;
 
     wnd.Gfx().BeginFrame(0.91f, 0.64f, 0.09f ); //nice yellow
-    //wnd.Gfx().BeginFrame(0.0f, 0.0f, 0.109f);
+    //wnd.Gfx().BeginFrame(0.0f, 0.0f, 0.109f); //dark 
     wnd.Gfx().SetCamera(camera.GetMatrix());
 
     light.Bind(wnd.Gfx(), camera.GetMatrix());
 
     const auto transform = DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
         DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-    nano.Draw(wnd.Gfx(), transform);
+    nano.Draw(wnd.Gfx());
 
 
     //const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
@@ -161,7 +142,7 @@ void Application::DoFrame()
     ImGui::End();
     camera.ShowControlWND();
     light.CreateControlWindow();
-    ShowModelWindow();
+    nano.ShowWindow();
 
     wnd.Gfx().EndFrame();
 }
