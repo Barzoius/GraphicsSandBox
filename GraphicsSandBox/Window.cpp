@@ -91,6 +91,23 @@ void Window::SetTitle(const std::string& title)
     }
 }
 
+void Window::EnableCursor()
+{
+    cursorEnabled = true;
+    ShowCursor();
+    EnableImGuiMouse();
+    FreeCursor();
+}
+
+
+void Window::DisableCursor()
+{
+    cursorEnabled = false;
+    HideCursor();
+    DisableImGuiMouse();
+    ConfineCursor();
+}
+
 std::optional<int> Window::ProccessMessages()
 {
     MSG msg;
@@ -123,6 +140,39 @@ Window::~Window()
 { 
     ImGui_ImplWin32_Shutdown();
     DestroyWindow(hWnd);
+}
+
+void Window::HideCursor()
+{
+    while (::ShowCursor(FALSE) >= 0);
+}
+
+void Window::ShowCursor()
+{
+    while (::ShowCursor(TRUE) < 0);
+}
+
+void Window::ConfineCursor()
+{
+    RECT rect;
+    GetClientRect(hWnd, &rect);
+    MapWindowPoints(hWnd, nullptr, reinterpret_cast<POINT*>(&rect), 2);
+    ClipCursor(&rect);
+}
+
+void Window::FreeCursor()
+{
+    ClipCursor(nullptr);
+}
+
+void Window::EnableImGuiMouse()
+{
+    ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+}
+
+void Window::DisableImGuiMouse()
+{
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 }
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -168,6 +218,24 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
     case WM_KILLFOCUS:
         kbd.ClearState();
         break;
+
+    case WM_ACTIVATE:
+
+        if (!cursorEnabled)
+        {
+            if (wParam & WA_ACTIVE)
+            {
+
+                ConfineCursor();
+                HideCursor();
+            }
+            else
+            {
+
+                FreeCursor();
+                ShowCursor();
+            }
+        }
 
     case WM_KEYDOWN:
     case WM_SYSKEYDOWN:
@@ -238,6 +306,15 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
     case WM_LBUTTONDOWN:
     {
+        SetForegroundWindow(hWnd);
+
+        if (!cursorEnabled)
+        {
+
+            ConfineCursor();
+            HideCursor();
+        }
+
         if (imio.WantCaptureKeyboard)
         {
             break;
