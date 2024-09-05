@@ -33,6 +33,23 @@ Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
     wnd.DisableCursor();
 }
 
+void Application::ShowRawInputWindow()
+{
+    while(const auto d = wnd.mouse.ReadRawDelta())
+    {
+        x += d->x;
+        y += d->y;
+    }
+
+    if (ImGui::Begin("RawInput"))
+    {
+        ImGui::Text("Tally: (%d,%d)", x, y);
+        ImGui::Text("Cursor: %s", wnd.CursorEnabled() ? "enabled" : "disabled");
+    }
+
+    ImGui::End();
+}
+
 int Application::Run()
 {
     MSG msg;
@@ -125,6 +142,24 @@ void Application::DoFrame()
 
     light.Draw(wnd.Gfx());
 
+    while (const auto e = wnd.kbd.ReadKey())
+    {
+        if (e->IsPressed() && e->GetCode() == VK_RETURN)
+        {
+            if (wnd.CursorEnabled())
+            {
+                wnd.DisableCursor();
+                wnd.mouse.EnableRaw();
+            }
+            else
+            {
+                wnd.EnableCursor();
+                wnd.mouse.DisableRaw();
+            }
+        }
+    }
+
+
 
 
     if (ImGui::Begin("Simulation Speed"))
@@ -137,6 +172,8 @@ void Application::DoFrame()
     camera.ShowControlWND();
     light.CreateControlWindow();
     nano.ShowWindow();
+
+    ShowRawInputWindow();
 
     wnd.Gfx().EndFrame();
 }

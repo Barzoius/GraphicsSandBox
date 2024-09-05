@@ -24,7 +24,7 @@ private:
 
     void DoFrame();
 
-    void ShowModelWindow();
+    void ShowRawInputWindow();
 
 private:
     ImGuiManager imgui;
@@ -32,6 +32,9 @@ private:
     Timer timer;
     Camera camera;
     PointLight light;
+
+    int x = 0;
+    int y = 0;
 
     float speedFactor = 1.0f;
     bool show_imgui_demo = true;

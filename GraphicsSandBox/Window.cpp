@@ -81,6 +81,18 @@ Window::Window(int width, int height, const char* name)
 
     pGfx = std::make_unique<Graphics>(hWnd);
 
+
+    RAWINPUTDEVICE rid;
+    rid.usUsagePage = 0x01; // mouse page
+    rid.usUsage = 0x02; // mouse usage
+    rid.dwFlags = 0;
+    rid.hwndTarget = nullptr;
+    if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
+    {
+        throw HWND_LAST_EXCEPT();
+    }
+
+
 }
 
 void Window::SetTitle(const std::string& title)
@@ -106,6 +118,11 @@ void Window::DisableCursor()
     HideCursor();
     DisableImGuiMouse();
     ConfineCursor();
+}
+
+bool Window::CursorEnabled() const noexcept
+{
+    return cursorEnabled;
 }
 
 std::optional<int> Window::ProccessMessages()
@@ -379,6 +396,48 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 //            mouse.OnWheelDown(point.x, point.y);
 //        }
 
+        break;
+    }
+
+    case WM_INPUT:
+    {
+
+        if (!mouse.RawEnabled())
+        {
+            break;
+        }
+
+        UINT size;
+
+        if (GetRawInputData(
+            reinterpret_cast<HRAWINPUT>(lParam),
+            RID_INPUT,
+            nullptr,
+            &size,
+            sizeof(RAWINPUTHEADER)) == -1)
+        {
+
+            break;
+        }
+        rawBuffer.resize(size);
+
+        if (GetRawInputData(
+            reinterpret_cast<HRAWINPUT>(lParam),
+            RID_INPUT,
+            rawBuffer.data(),
+            &size,
+            sizeof(RAWINPUTHEADER)) != size)
+        {
+
+            break;
+        }
+
+        auto& ri = reinterpret_cast<const RAWINPUT&>(*rawBuffer.data());
+        if (ri.header.dwType == RIM_TYPEMOUSE &&
+            (ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
+        {
+            mouse.OnRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
+        }
         break;
     }
     }

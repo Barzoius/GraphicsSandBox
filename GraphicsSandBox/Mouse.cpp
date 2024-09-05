@@ -22,6 +22,41 @@ int Mouse::GetWheelDeltaCarry() const noexcept
     return wheelDeltaCarry;
 }
 
+std::optional<Mouse::RawDelta> Mouse::ReadRawDelta() noexcept
+{
+    if (rawDeltaBuffer.empty())
+    {
+        return std::nullopt;
+    }
+
+    const RawDelta d = rawDeltaBuffer.front();
+    rawDeltaBuffer.pop();
+    return d;
+
+}
+
+void Mouse::OnRawDelta(int dx, int dy) noexcept
+{
+    rawDeltaBuffer.push({ dx,dy });
+    TrimBuffer();
+}
+
+void Mouse::EnableRaw() noexcept
+{
+    rawEnabled = true;
+}
+
+void Mouse::DisableRaw() noexcept
+{
+    rawEnabled = false;
+}
+
+bool Mouse::RawEnabled() const noexcept
+{
+    return rawEnabled;
+}
+
+
 bool Mouse::IsInWindow() const noexcept
 {
     return false; ///.....///
@@ -146,5 +181,13 @@ void Mouse::TrimBuffer() noexcept
     while (buffer.size() > bufferSize)
     {
         buffer.pop();
+    }
+}
+
+void Mouse::TrimRawInputBuffer() noexcept
+{
+    while (rawDeltaBuffer.size() > bufferSize)
+    {
+        rawDeltaBuffer.pop();
     }
 }

@@ -66,6 +66,8 @@ public:
     void EnableCursor();
     void DisableCursor();
 
+    bool CursorEnabled() const noexcept;
+
     static std::optional<int> ProccessMessages();
 
     Graphics& Gfx();
@@ -93,7 +95,8 @@ private:
     int height;
     HWND hWnd;
 
-    bool cursorEnabled = false;
+    bool cursorEnabled = true;
+    std::vector<BYTE> rawBuffer;
 
     std::unique_ptr<Graphics> pGfx;
 
