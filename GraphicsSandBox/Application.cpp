@@ -157,6 +157,42 @@ void Application::DoFrame()
                 wnd.mouse.DisableRaw();
             }
         }
+
+        if (!wnd.CursorEnabled())
+        {
+            if (wnd.kbd.KeyIsPressed('W'))
+            {
+                camera.Translate({ 0.0f,0.0f,dt });
+            }
+            if (wnd.kbd.KeyIsPressed('A'))
+            {
+                camera.Translate({ -dt,0.0f,0.0f });
+            }
+            if (wnd.kbd.KeyIsPressed('S'))
+            {
+                camera.Translate({ 0.0f,0.0f,-dt });
+            }
+            if (wnd.kbd.KeyIsPressed('D'))
+            {
+                camera.Translate({ dt,0.0f,0.0f });
+            }
+            if (wnd.kbd.KeyIsPressed('R'))
+            {
+                camera.Translate({ 0.0f,dt,0.0f });
+            }
+            if (wnd.kbd.KeyIsPressed('F'))
+            {
+                camera.Translate({ 0.0f,-dt,0.0f });
+            }
+        }
+
+        while (const auto delta = wnd.mouse.ReadRawDelta())
+        {
+            if (!wnd.CursorEnabled())
+            {
+                camera.Rotate(delta->x, delta->y);
+            }
+        }
     }
 
 

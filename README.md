@@ -47,3 +47,12 @@
 | Solid |  Wireframe |
 |---|---|
 |  ![](GraphicsSandBox/Resources/ForREADME/suzanneSolid.png) | ![](GraphicsSandBox/Resources/ForREADME/suzanneWire.png) |
+
+
+<br/>
+
+
+## Blinn-Phong Lighting
+| |  |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/LeonFar.png) | ![](GraphicsSandBox/Resources/ForREADME/LeonClose.png) |
