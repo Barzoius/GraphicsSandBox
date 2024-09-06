@@ -29,7 +29,7 @@ using namespace DVS;
 Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
 {
 
-    wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+    wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
     wnd.DisableCursor();
 }
 
@@ -52,8 +52,7 @@ void Application::ShowRawInputWindow()
 
 int Application::Run()
 {
-    MSG msg;
-    BOOL gResult;
+
 
     while (true)
     {
@@ -62,58 +61,10 @@ int Application::Run()
       {
           return *enter_code;
       }
-
-      /// DO FRAME ///
       DoFrame();
       
-        static int i = 0;
-        while (!wnd.mouse.IsEmpty())
-        {
-            const auto e = wnd.mouse.Read();
-            switch (e.GetType())
-            {
-            case Mouse::Event::Type::Leave:
-                wnd.SetTitle("Outisde the window");
-                break;
-
-            case Mouse::Event::Type::Move:
-            {
-                std::ostringstream oss;
-                oss << "Mouse Pos: (" << e.GetPosX() << ", "
-                    << e.GetPosY() << ")" << std::endl;
-
-                wnd.SetTitle(oss.str());
-                break;
-            }
-
-            case Mouse::Event::Type::WheelUp:
-                i++;
-                {
-                    std::ostringstream oss;
-                    oss << "Up: " << i;
-                    wnd.SetTitle(oss.str());
-                }
-                break;
-            case Mouse::Event::Type::WheelDown:
-                i--;
-                {
-                    std::ostringstream oss;
-                    oss << "Down: " << i;
-                    wnd.SetTitle(oss.str());
-                }
-                break;
-
-            }
-
-        }
+        
     }
-
-    if (gResult == -1)
-    {
-        return -1;
-    }
-
-    return msg.wParam;
 
 }
 
@@ -126,13 +77,10 @@ void Application::DoFrame()
     const auto dt = timer.Mark() * speedFactor;
 
     wnd.Gfx().BeginFrame(0.91f, 0.64f, 0.09f ); //nice yellow
-    //wnd.Gfx().BeginFrame(0.0f, 0.0f, 0.109f); //dark 
     wnd.Gfx().SetCamera(camera.GetMatrix());
 
     light.Bind(wnd.Gfx(), camera.GetMatrix());
 
-    const auto transform = DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
-        DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
     nano.Draw(wnd.Gfx());
 
 
@@ -144,8 +92,14 @@ void Application::DoFrame()
 
     while (const auto e = wnd.kbd.ReadKey())
     {
-        if (e->IsPressed() && e->GetCode() == VK_RETURN)
+        if (!e->IsPressed())
         {
+            continue;
+        }
+
+        switch (e->GetCode())
+        {
+        case VK_ESCAPE:
             if (wnd.CursorEnabled())
             {
                 wnd.DisableCursor();
@@ -156,6 +110,9 @@ void Application::DoFrame()
                 wnd.EnableCursor();
                 wnd.mouse.DisableRaw();
             }
+            break;
+        case VK_F1:
+            break;
         }
 
         if (!wnd.CursorEnabled())
@@ -186,30 +143,31 @@ void Application::DoFrame()
             }
         }
 
-        while (const auto delta = wnd.mouse.ReadRawDelta())
+    }
+
+    while (const auto delta = wnd.mouse.ReadRawDelta())
+    {
+        if (!wnd.CursorEnabled())
         {
-            if (!wnd.CursorEnabled())
-            {
-                camera.Rotate(delta->x, delta->y);
-            }
+            camera.Rotate(delta->x, delta->y);
         }
     }
 
 
 
 
-    if (ImGui::Begin("Simulation Speed"))
-    {
-        ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 6.0f, "%.4f", 3.2f);
-        ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING (hold spacebar to pause)");
-    }
-    ImGui::End();
+    //if (ImGui::Begin("Simulation Speed"))
+    //{
+    //    ImGui::SliderFloat("Speed Factor", &speedFactor, 0.0f, 6.0f, "%.4f", 3.2f);
+    //    ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    //    ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING (hold spacebar to pause)");
+    //}
+    //ImGui::End();
     camera.ShowControlWND();
     light.CreateControlWindow();
     nano.ShowWindow();
 
-    ShowRawInputWindow();
+    //ShowRawInputWindow();
 
     wnd.Gfx().EndFrame();
 }

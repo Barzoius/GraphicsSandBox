@@ -253,9 +253,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
                 ShowCursor();
             }
         }
+        break;
+
 
     case WM_KEYDOWN:
+
     case WM_SYSKEYDOWN:
+
         if (imio.WantCaptureKeyboard)
         {
             break;
@@ -285,12 +289,25 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
     case WM_MOUSEMOVE:
     {
+       
+
+        const POINTS point = MAKEPOINTS(lParam);
+
+        if (!cursorEnabled)
+        {
+            if (!mouse.IsInWindow())
+            {
+                SetCapture(hWnd);
+                mouse.OnMouseEnter();
+                HideCursor();
+            }
+            break;
+        }
+
         if (imio.WantCaptureKeyboard)
         {
             break;
         }
-
-        const POINTS point = MAKEPOINTS(lParam);
 
         if (point.x >= 0 && point.x < width &&
             point.y >= 0 && point.y < height)
@@ -319,6 +336,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
                 mouse.OnMouseLeave();
             }
         }
+
+      
     }
 
     case WM_LBUTTONDOWN:
@@ -362,6 +381,12 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
         }
         const POINTS point = MAKEPOINTS(lParam);
         mouse.OnLeftReleased(point.x, point.y);
+        
+        if (point.x < 0 || point.x >= width || point.y < 0 || point.y >= height)
+        {
+            ReleaseCapture();
+            mouse.OnMouseLeave();
+        }
         break;
     }
 
@@ -373,6 +398,12 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
         }
         const POINTS point = MAKEPOINTS(lParam);
         mouse.OnRightReleased(point.x, point.y);
+        
+        if (point.x < 0 || point.x >= width || point.y < 0 || point.y >= height)
+        {
+            ReleaseCapture();
+            mouse.OnMouseLeave();
+        }
         break;
     }
 
@@ -387,14 +418,6 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
         const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
         mouse.OnWheelDelta(point.x, point.y, delta);
 
-//        if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-//        {
-//            mouse.OnWheelUp(point.x, point.y);
-//        }
-//        else
-//        {
-//            mouse.OnWheelDown(point.x, point.y);
-//        }
 
         break;
     }

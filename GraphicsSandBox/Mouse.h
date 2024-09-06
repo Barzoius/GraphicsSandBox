@@ -117,7 +117,7 @@ public:
     bool RawEnabled() const noexcept;
 
 
-    Event Read() noexcept;
+    std::optional<Mouse::Event> Read() noexcept;
 
     bool IsEmpty() const noexcept
     {
