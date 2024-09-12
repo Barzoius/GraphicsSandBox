@@ -26,7 +26,7 @@ GDIPManager gdipm;
 
 using namespace DVS;
 
-Application::Application() : wnd( 800, 600, "Window" ), light(wnd.Gfx())
+Application::Application() : wnd( 1280, 720, "Window" ), light(wnd.Gfx())
 {
 
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
