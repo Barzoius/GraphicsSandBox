@@ -82,13 +82,23 @@ void Node::AddChild(std::unique_ptr<Node> pChild) noexcept
 }
 
 
-void Node::RenderTree() const noexcept
+void Node::ShowTree(int& nodeIndex, std::optional<int>& selectedIndex) const noexcept
 {
-    if (ImGui::TreeNode(name.c_str()))
+    const int currentNodeIndex = nodeIndex;
+    nodeIndex++;
+
+    const auto node_flags = ImGuiTreeNodeFlags_OpenOnArrow
+        | ((currentNodeIndex == selectedIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0)
+        | ((childPtrs.size() == 0) ? ImGuiTreeNodeFlags_Leaf : 0);
+
+    if (ImGui::TreeNodeEx((void*)(intptr_t)currentNodeIndex, node_flags, name.c_str()))
     {
+
+        selectedIndex = ImGui::IsItemClicked() ? currentNodeIndex : selectedIndex;
+
         for (const auto& pChild : childPtrs)
         {
-            pChild->RenderTree();
+            pChild->ShowTree(nodeIndex, selectedIndex);
         }
         ImGui::TreePop();
     }
@@ -102,7 +112,55 @@ void Node::RenderTree() const noexcept
 ///========================================================|||
 
 
+class ModelWindow 
+{
+public:
+    void Show(const char* windowName, const Node& root) noexcept
+    {
+        windowName = windowName ? windowName : "Model";
+
+        int nodeIndexTracker = 0;
+
+        if (ImGui::Begin(windowName))
+        {
+            ImGui::Columns(2, nullptr, true);
+            root.ShowTree(nodeIndexTracker, selectedIndex);
+
+            ImGui::NextColumn();
+            ImGui::Text("Orientation");
+            ImGui::SliderAngle("Roll", &pos.roll, -180.0f, 180.0f);
+            ImGui::SliderAngle("Pitch", &pos.pitch, -180.0f, 180.0f);
+            ImGui::SliderAngle("Yaw", &pos.yaw, -180.0f, 180.0f);
+            ImGui::Text("Position");
+            ImGui::SliderFloat("X", &pos.x, -20.0f, 20.0f);
+            ImGui::SliderFloat("Y", &pos.y, -20.0f, 20.0f);
+            ImGui::SliderFloat("Z", &pos.z, -20.0f, 20.0f);
+        }
+        ImGui::End();
+    }
+    DirectX::XMMATRIX GetTransform() const noexcept
+    {
+        return DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
+            DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    }
+private:
+    std::optional<int> selectedIndex;
+
+    struct
+    {
+        float roll = 0.0f;
+        float pitch = 0.0f;
+        float yaw = 0.0f;
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
+    } pos;
+};
+
+
 Model::Model(Graphics& gfx, const std::string fileName)
+    :
+    pWindow(std::make_unique<ModelWindow>())
 {
     Assimp::Importer imp;
     const auto pScene = imp.ReadFile(fileName.c_str(),
@@ -118,33 +176,23 @@ Model::Model(Graphics& gfx, const std::string fileName)
     pRoot = ParseNode(*pScene->mRootNode);
 }
 
+Model::~Model() noexcept {}
+
 void Model::Draw(Graphics& gfx) const
 {
-    const auto transform = DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
-        DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    //const auto transform = DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
+    //    DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
-    pRoot->Draw(gfx, transform);
+    //pRoot->Draw(gfx, transform);
+
+    pRoot->Draw(gfx, pWindow->GetTransform());
+
+
 }
 
 void Model::ShowWindow(const char* windowName) noexcept
 {
-    windowName = windowName ? windowName : "Model";
-    if (ImGui::Begin(windowName))
-    {
-        ImGui::Columns(2, nullptr, true);
-        pRoot->RenderTree();
-
-        ImGui::NextColumn();
-        ImGui::Text("Orientation");
-        ImGui::SliderAngle("Roll", &pos.roll, -180.0f, 180.0f);
-        ImGui::SliderAngle("Pitch", &pos.pitch, -180.0f, 180.0f);
-        ImGui::SliderAngle("Yaw", &pos.yaw, -180.0f, 180.0f);
-        ImGui::Text("Position");
-        ImGui::SliderFloat("X", &pos.x, -20.0f, 20.0f);
-        ImGui::SliderFloat("Y", &pos.y, -20.0f, 20.0f);
-        ImGui::SliderFloat("Z", &pos.z, -20.0f, 20.0f);
-    }
-    ImGui::End();
+    pWindow->Show(windowName, *pRoot);
 }
 
 

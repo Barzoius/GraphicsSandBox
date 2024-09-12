@@ -21,7 +21,7 @@ namespace Bind
 
 class Graphics
 {
-    friend Bind:: Bindable;
+    friend Bind::Bindable;
 public:
     class Exception : public ModException
     {

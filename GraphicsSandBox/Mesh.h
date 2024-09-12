@@ -8,6 +8,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <optional>
+
 
 class Mesh : public CRTPDrawable<Mesh>
 {
@@ -27,7 +29,7 @@ class Node
 public:
     Node(const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) ;
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
-    void RenderTree() const noexcept;
+    void ShowTree(int& nodeIndex, std::optional<int>& selectedIndex) const noexcept;
 
 private:
     void AddChild(std::unique_ptr<Node> pChild) noexcept;
@@ -48,6 +50,8 @@ public:
     void Draw(Graphics& gfx) const;
     void ShowWindow(const char* windowName = nullptr) noexcept;
 
+    ~Model() noexcept;
+
 private:
     static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh);
     std::unique_ptr<Node> ParseNode(const aiNode& node) noexcept;
@@ -55,13 +59,5 @@ private:
     std::unique_ptr<Node> pRoot;
     std::vector<std::unique_ptr<Mesh>> meshPtrs;
 
-    struct
-    {
-        float roll = 0.0f;
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
-    } pos;
+    std::unique_ptr<class ModelWindow> pWindow;
 };
