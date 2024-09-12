@@ -53,8 +53,9 @@ DirectX::XMMATRIX Mesh::GetTransformXM() const noexcept
 ///=======================================================|||
 
 
-Node::Node(const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& trans)
+Node::Node(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& trans)
     :
+    id(id),
     meshPtrs(std::move(meshPtrs)),
     name(name)
 {
@@ -87,23 +88,23 @@ void Node::AddChild(std::unique_ptr<Node> pChild) noexcept
     childPtrs.push_back(std::move(pChild));
 }
 
-void Node::ShowTree(int& nodeIndex, std::optional<int>& selectedIndex, Node*& pSelectedNode) const noexcept
+void Node::ShowTree(Node*& pSelectedNode) const noexcept
 {
-    const int currentNodeIndex = nodeIndex;
-    nodeIndex++;
+
+    const int selectedId = (pSelectedNode == nullptr) ? -1 : pSelectedNode->GetId();
 
     const auto node_flags = ImGuiTreeNodeFlags_OpenOnArrow
-        | ((currentNodeIndex == selectedIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0)
+        | ((GetId() == selectedId) ? ImGuiTreeNodeFlags_Selected : 0)
         | ((childPtrs.size() == 0) ? ImGuiTreeNodeFlags_Leaf : 0);
 
 
     const auto expanded = ImGui::TreeNodeEx(
-        (void*)(intptr_t)currentNodeIndex, node_flags, name.c_str()
-    );
+        (void*)(intptr_t)GetId(), node_flags, name.c_str());
+
     // processing for selecting node
     if (ImGui::IsItemClicked())
     {
-        selectedIndex = currentNodeIndex;
+       
         pSelectedNode = const_cast<Node*>(this);
     }
 
@@ -111,7 +112,7 @@ void Node::ShowTree(int& nodeIndex, std::optional<int>& selectedIndex, Node*& pS
     {
         for (const auto& pChild : childPtrs)
         {
-            pChild->ShowTree(nodeIndex, selectedIndex, pSelectedNode);
+            pChild->ShowTree(pSelectedNode);
         }
         ImGui::TreePop();
     }
@@ -125,6 +126,11 @@ void Node::SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept
     DirectX::XMStoreFloat4x4(&appliedTransform, transform);
 }
 
+
+int Node::GetId() const noexcept
+{
+    return id;
+}
 
 ///========================================================|||
 ///                                                        |||
@@ -145,12 +151,12 @@ public:
         if (ImGui::Begin(windowName))
         {
             ImGui::Columns(2, nullptr, true);
-            root.ShowTree(nodeIndexTracker, selectedIndex, pSelectedNode);
+            root.ShowTree(pSelectedNode);
 
             ImGui::NextColumn();
             if (pSelectedNode != nullptr)
             {
-                auto& transform = transforms[*selectedIndex];
+                auto& transform = transforms[pSelectedNode->GetId()];
                 ImGui::Text("Orientation");
                 ImGui::SliderAngle("Roll", &transform.roll, -180.0f, 180.0f);
                 ImGui::SliderAngle("Pitch", &transform.pitch, -180.0f, 180.0f);
@@ -167,7 +173,9 @@ public:
 
     DirectX::XMMATRIX GetTransform() const noexcept
     {
-        const auto& transform = transforms.at(*selectedIndex);
+        assert(pSelectedNode != nullptr);
+        const auto& transform = transforms.at(pSelectedNode->GetId());
+
         return
             DirectX::XMMatrixRotationRollPitchYaw(transform.roll, transform.pitch, transform.yaw) *
             DirectX::XMMatrixTranslation(transform.x, transform.y, transform.z);
@@ -179,7 +187,7 @@ public:
     }
 
 private:
-    std::optional<int> selectedIndex;
+    
     Node* pSelectedNode;
 
     struct TransformParameters
@@ -211,7 +219,8 @@ Model::Model(Graphics& gfx, const std::string fileName)
         meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i]));
     }
 
-    pRoot = ParseNode(*pScene->mRootNode);
+    int nextID = 0;
+    pRoot = ParseNode(nextID, *pScene->mRootNode);
 }
 
 Model::~Model() noexcept {}
@@ -300,7 +309,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh)
 
 }
 
-std::unique_ptr<Node> Model::ParseNode(const aiNode& node) noexcept
+std::unique_ptr<Node> Model::ParseNode(int& nextID, const aiNode& node) noexcept
 {
     const auto transform = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(
         reinterpret_cast<const DirectX::XMFLOAT4X4*>(&node.mTransformation)
@@ -315,11 +324,11 @@ std::unique_ptr<Node> Model::ParseNode(const aiNode& node) noexcept
         curMeshPtrs.push_back(meshPtrs.at(meshIndex).get());
     }
 
-    auto pNode = std::make_unique<Node>(node.mName.C_Str(), std::move(curMeshPtrs), transform);
+    auto pNode = std::make_unique<Node>(nextID++, node.mName.C_Str(), std::move(curMeshPtrs), transform);
 
     for (size_t i = 0; i < node.mNumChildren; i++)
     {
-        pNode->AddChild(ParseNode(*node.mChildren[i]));
+        pNode->AddChild(ParseNode(nextID, *node.mChildren[i]));
     }
 
     return pNode;
