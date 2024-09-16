@@ -48,7 +48,7 @@ private:
     std::vector<std::unique_ptr<class Drawable>> drawables;
     static constexpr size_t nDrawables = 180;
 
-    Model nano{ wnd.Gfx(), "Resources\\Models\\nanosuit.obj" };
+    Model nano{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
 
     struct
     {

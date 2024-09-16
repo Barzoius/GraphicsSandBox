@@ -63,7 +63,9 @@ public:
     ~Model() noexcept;
 
 private:
-    static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh);
+    static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, 
+                                           const aiMaterial* const* pMaterial); // nonconst pointer to a const pointer to a an array of const aiMaterial
+
     std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node) noexcept;
 private:
     std::unique_ptr<Node> pRoot;

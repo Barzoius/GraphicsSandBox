@@ -11,12 +11,16 @@ cbuffer LightCBuf
 
 cbuffer ObjectCBuf
 {
-    float3 materialColor;
+
     float specularIntensity;
     float specularPower;
+    float padding[2];
 };
 
-float4 main(float3 worldPos : Position, float3 n : Normal) : SV_Target
+Texture2D tex;
+SamplerState splr;
+
+float4 main(float3 worldPos : Position, float3 n : Normal, float2 tc: Texcoord) : SV_Target
 {
     const float3 vToL = lightPos - worldPos;
     const float distToL = length(vToL);
@@ -37,6 +41,6 @@ float4 main(float3 worldPos : Position, float3 n : Normal) : SV_Target
     const float3 specular = attenuation * (diffuseColor * diffuseIntensity) * specularIntensity *
                             pow(max(0.0f, dot(normalize(-r), normalize(worldPos))), specularPower);
 
-    return float4(saturate((diffuse + ambient + specular) * materialColor), 1.0f);
+    return float4(saturate(diffuse + ambient + specular), 1.0f) * tex.Sample(splr, tc);
 }
 
