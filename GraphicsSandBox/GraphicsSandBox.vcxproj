@@ -168,11 +168,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Cuboid.cpp" />
-    <ClCompile Include="Doughnut.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="ErrorInfoManager.cpp" />
     <ClCompile Include="GDIPManager.cpp" />
@@ -190,14 +187,11 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModException.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Pipe.cpp" />
     <ClCompile Include="PixelSahder.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Sampler.cpp" />
-    <ClCompile Include="Sheet.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="Surface.cpp" />
-    <ClCompile Include="TestLoadedModel.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
@@ -209,7 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Ball.h" />
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableObjects.h" />
     <ClInclude Include="Camera.h" />
@@ -217,9 +210,7 @@
     <ClInclude Include="Cone.h" />
     <ClInclude Include="CRTPDrawable.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="Cuboid.h" />
     <ClInclude Include="ConstantBuffers.h" />
-    <ClInclude Include="Doughnut.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="ErrorInfoManager.h" />
     <ClInclude Include="GDIPManager.h" />
@@ -244,19 +235,15 @@
     <ClInclude Include="ModException.h" />
     <ClInclude Include="ModWin.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="Pipe.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Prism.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Sampler.h" />
-    <ClInclude Include="Sheet.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
-    <ClInclude Include="TestLoadedModel.h" />
-    <ClInclude Include="TestObject.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />

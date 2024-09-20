@@ -1,10 +1,9 @@
 #include "Application.h"
-#include "Cuboid.h"
+
 #include "Math.h"
 #include "Surface.h"
 #include "GDIPManager.h"
 #include "Torus.h"
-#include "TestLoadedModel.h"
 
 #include "ImGui/imgui.h"
 #include "assimp/Importer.hpp"
@@ -15,10 +14,6 @@
 #include <memory>
 #include <algorithm>
 
-#include "Ball.h"
-#include "Doughnut.h"
-#include "Sheet.h"
-#include "Pipe.h"
 
 #include "VertexSystem.h"
 
@@ -30,7 +25,7 @@ Application::Application() : wnd( 1280, 720, "Window" ), light(wnd.Gfx())
 {
 
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
-    wnd.DisableCursor();
+   // wnd.DisableCursor();
 }
 
 void Application::ShowRawInputWindow()

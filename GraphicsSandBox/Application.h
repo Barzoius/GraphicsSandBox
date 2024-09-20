@@ -39,15 +39,6 @@ private:
     float speedFactor = 1.0f;
     bool show_imgui_demo = true;
 
-    std::unique_ptr<class Cuboid> testCube;
-    std::unique_ptr<class Cuboid> testUVShhere;
-    std::unique_ptr<class Cuboid> testSheet;
-
-    std::vector<std::unique_ptr<class Cuboid>> cuboids;
-
-    std::vector<std::unique_ptr<class Drawable>> drawables;
-    static constexpr size_t nDrawables = 180;
-
     Model nano{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
 
     struct

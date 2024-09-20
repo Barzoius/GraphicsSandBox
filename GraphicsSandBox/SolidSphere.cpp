@@ -8,22 +8,20 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
 	namespace dx = DirectX;
 
-	if (!IsStaticInitialized())
-	{
 		struct Vertex
 		{
 			dx::XMFLOAT3 pos;
 		};
 		auto model = Sphere::Make<Vertex>();
 		model.Transform(dx::XMMatrixScaling(radius, radius, radius));
-		AddBind(std::make_unique<Bind::VertexBuffer>(gfx, model.vertices));
-		AddIndexBuffer(std::make_unique<Bind::IndexBuffer>(gfx, model.indices));
+		AddBind(std::make_shared<Bind::VertexBuffer>(gfx, model.vertices));
+		AddBind(std::make_shared<Bind::IndexBuffer>(gfx, model.indices));
 
-		auto pvs = std::make_unique<Bind::VertexShader>(gfx, L"SolidVS.cso");
+		auto pvs = std::make_shared<Bind::VertexShader>(gfx, L"SolidVS.cso");
 		auto pvsbc = pvs->GetBytecode();
-		AddStaticBind(std::move(pvs));
+		AddBind(std::move(pvs));
 
-		AddStaticBind(std::make_unique<Bind::PixelShader>(gfx, L"SolidPS.cso"));
+		AddBind(std::make_shared<Bind::PixelShader>(gfx, L"SolidPS.cso"));
 
 		struct PSColorConstant
 		{
@@ -31,25 +29,20 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 			float padding;
 		} colorConst;
 
-		AddStaticBind(std::make_unique<Bind::PixelConstantBuffer<PSColorConstant>>(gfx, colorConst));
+		AddBind(std::make_shared<Bind::PixelConstantBuffer<PSColorConstant>>(gfx, colorConst));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
 			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		};
-		AddStaticBind(std::make_unique<Bind::InputLayout>(gfx, ied, pvsbc));
+		AddBind(std::make_shared<Bind::InputLayout>(gfx, ied, pvsbc));
 
-		AddStaticBind(std::make_unique<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	}
-	else
-	{
-		SetIndexFromStatic();
-	}
+		AddBind(std::make_shared<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	
 
-	AddBind(std::make_unique<Bind::TransformCbuf>(gfx, *this));
+	AddBind(std::make_shared<Bind::TransformCbuf>(gfx, *this));
 }
-
-void SolidSphere::Update(float dt) noexcept {}
+	
 
 void SolidSphere::SetPos(DirectX::XMFLOAT3 pos) noexcept
 {

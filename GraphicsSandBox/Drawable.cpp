@@ -15,23 +15,16 @@ void Drawable::Draw(Graphics& gfx) const noexcept
         b->Bind(gfx);
     }
 
-    for (auto& b : GetStaticBinds())
-    {
-        b->Bind(gfx);
-    }
-
     gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
-void Drawable::AddBind(std::unique_ptr<Bindable> bind) noexcept
+void Drawable::AddBind(std::shared_ptr<Bindable> bind) noexcept
 {
-    assert("Use AddIndexBuffer to bind index buffers" && typeid(*bind) != typeid(IndexBuffer));
-    binds.push_back(std::move(bind));
-}
+    if (typeid(*bind) == typeid(IndexBuffer))
+    {
+        assert("Binding multiple index buffers not allowed" && pIndexBuffer == nullptr);
+        pIndexBuffer = &static_cast<IndexBuffer&>(*bind);
+    }
 
-void Drawable::AddIndexBuffer(std::unique_ptr<IndexBuffer> ibuf) noexcept
-{
-    assert("Attempting to add index buffer a second time" && pIndexBuffer == nullptr);
-    pIndexBuffer = ibuf.get();
-    binds.push_back(std::move(ibuf));
+    binds.push_back(std::move(bind));
 }

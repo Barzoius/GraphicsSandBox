@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CRTPDrawable.h"
+#include "Drawable.h"
 #include "BindableObjects.h"
 #include "VertexSystem.h"
 
@@ -11,10 +11,10 @@
 #include <optional>
 
 
-class Mesh : public CRTPDrawable<Mesh>
+class Mesh : public Drawable
 {
 public:
-    Mesh(Graphics& gfx, std::vector<std::unique_ptr<Bind::Bindable>> bindPtrs);
+    Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs);
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 private:

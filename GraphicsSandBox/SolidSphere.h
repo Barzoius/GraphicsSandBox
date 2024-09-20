@@ -1,11 +1,10 @@
 #pragma once
-#include "CRTPDrawable.h"
+#include "Drawable.h"
 
-class SolidSphere : public CRTPDrawable<SolidSphere>
+class SolidSphere : public Drawable
 {
 public:
     SolidSphere(Graphics& gfx, float radius);
-    void Update(float dt) noexcept override;
     void SetPos(DirectX::XMFLOAT3 pos) noexcept;
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
 private:
