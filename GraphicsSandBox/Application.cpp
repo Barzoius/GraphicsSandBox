@@ -22,11 +22,14 @@ GDIPManager gdipm;
 
 using namespace DVS;
 
-Application::Application() : wnd( 1280, 720, "Window" ), light(wnd.Gfx())
+Application::Application() 
+    : 
+    wnd( 1280, 720, "Window" ), 
+    light(wnd.Gfx()),
+    plane(wnd.Gfx(), 3.0f)
 {
-
+    plane.SetPos({ 1.0f,17.0f,-1.0f });
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
-
 
 }
 
@@ -86,6 +89,8 @@ void Application::DoFrame()
     //model->Draw(wnd.Gfx());
 
     light.Draw(wnd.Gfx());
+
+    plane.Draw( wnd.Gfx() );
 
     while (const auto e = wnd.kbd.ReadKey())
     {
@@ -164,6 +169,7 @@ void Application::DoFrame()
     light.CreateControlWindow();
     nano.ShowWindow();
     nano2.ShowWindow();
+    plane.SpawnWindow(wnd.Gfx());
 
 
     //ShowRawInputWindow();

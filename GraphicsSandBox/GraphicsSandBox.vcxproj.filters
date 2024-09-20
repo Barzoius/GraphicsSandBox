@@ -132,6 +132,9 @@
     <ClCompile Include="VertexSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestPlane.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModWin.h">
@@ -290,6 +293,9 @@
     <ClInclude Include="BindableCodex.h">
       <Filter>Header Files\Bindables</Filter>
     </ClInclude>
+    <ClInclude Include="TestPlane.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Users\mecca\Desktop\images-removebg-preview.png">
@@ -314,5 +320,6 @@
     <FxCompile Include="Shaders\SolidPS.hlsl" />
     <FxCompile Include="Shaders\SolidVS.hlsl" />
     <FxCompile Include="Shaders\PhongPS_SpecMap.hlsl" />
+    <FxCompile Include="Shaders\PhongNPS.hlsl" />
   </ItemGroup>
 </Project>

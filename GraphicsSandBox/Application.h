@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Mesh.h"
 
+#include "TestPlane.h"
 
 #include "PointLight.h"
 
@@ -41,5 +42,7 @@ private:
 
     Model nano{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
     Model nano2{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
+
+    TestPlane plane;
 
 };
