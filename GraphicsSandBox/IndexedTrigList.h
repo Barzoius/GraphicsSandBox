@@ -2,30 +2,34 @@
 #include <vector>
 #include <DirectXMath.h>
 
-template<class T>
+#include "VertexSystem.h"
+
+
 class IndexedTrigList
 {
 public:
     IndexedTrigList() = default;
-    IndexedTrigList(std::vector<T> verts_in, std::vector<unsigned short> indices_in) 
+    IndexedTrigList(DVS::VertexBuffer verts_in, std::vector<unsigned short> indices_in)
         :
         vertices(std::move(verts_in)),
         indices(std::move(indices_in))
     {
-        assert(vertices.size() > 2);
+        assert(vertices.Size() > 2);
         assert(indices.size() % 3 == 0);
     }
     void Transform(DirectX::FXMMATRIX matrix)
     {
-        for (auto& v : vertices)
+        using Elements = DVS::VertexLayout::ElementType;
+        for (int i = 0; i < vertices.Size(); i++)
         {
-            const DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&v.pos);
-            DirectX::XMStoreFloat3(	&v.pos, DirectX::XMVector3Transform(pos, matrix));
+            auto& pos = vertices[i].Attr<Elements::Position3D>();
+
+            DirectX::XMStoreFloat3(	&pos, DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&pos), matrix));
         }
     }
 
 
-    void SetNormalsIndependentFlat() noexcept
+   /* void SetNormalsIndependentFlat() noexcept
     {
         using namespace DirectX;
 
@@ -46,9 +50,9 @@ public:
             XMStoreFloat3(&v1.n, n);
             XMStoreFloat3(&v2.n, n);
         }
-    }
+    }*/
 
 public:
-    std::vector<T> vertices;
+    DVS::VertexBuffer vertices;
     std::vector<unsigned short> indices;
 };

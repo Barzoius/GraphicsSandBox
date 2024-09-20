@@ -1,55 +1,57 @@
 #include "SolidSphere.h"
 #include "BindableObjects.h"
 #include "GFX_MACROS.h"
+#include "VertexSystem.h"
 #include "Sphere.h"
 
 
 SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
-	namespace dx = DirectX;
 
-		struct Vertex
-		{
-			dx::XMFLOAT3 pos;
-		};
-		auto model = Sphere::Make<Vertex>();
-		model.Transform(dx::XMMatrixScaling(radius, radius, radius));
-		AddBind(std::make_shared<Bind::VertexBuffer>(gfx, model.vertices));
-		AddBind(std::make_shared<Bind::IndexBuffer>(gfx, model.indices));
+    struct Vertex
+    {
+        DirectX::XMFLOAT3 pos;
+    };
 
-		auto pvs = std::make_shared<Bind::VertexShader>(gfx, L"SolidVS.cso");
-		auto pvsbc = pvs->GetBytecode();
-		AddBind(std::move(pvs));
+    auto model = Sphere::Make();
+    model.Transform(DirectX::XMMatrixScaling(radius, radius, radius));
 
-		AddBind(std::make_shared<Bind::PixelShader>(gfx, L"SolidPS.cso"));
+    AddBind(std::make_shared<Bind::VertexBuffer>(gfx, model.vertices));
+    AddBind(std::make_shared<Bind::IndexBuffer>(gfx, model.indices));
 
-		struct PSColorConstant
-		{
-			dx::XMFLOAT3 color = { 1.0f,1.0f,1.0f };
-			float padding;
-		} colorConst;
+    auto pvs = std::make_shared<Bind::VertexShader>(gfx, L"SolidVS.cso");
+    auto pvsbc = pvs->GetBytecode();
 
-		AddBind(std::make_shared<Bind::PixelConstantBuffer<PSColorConstant>>(gfx, colorConst));
+    AddBind(std::move(pvs));
 
-		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-		{
-			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		};
-		AddBind(std::make_shared<Bind::InputLayout>(gfx, ied, pvsbc));
+    AddBind(std::make_shared<Bind::PixelShader>(gfx, L"SolidPS.cso"));
 
-		AddBind(std::make_shared<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	
+    struct PSColorConstant
+    {
+        DirectX::XMFLOAT3 color = { 1.0f,1.0f,1.0f };
+        float padding;
+    } colorConst;
 
-	AddBind(std::make_shared<Bind::TransformCbuf>(gfx, *this));
+    AddBind(std::make_shared<Bind::PixelConstantBuffer<PSColorConstant>>(gfx, colorConst));
+
+    const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
+    {
+        { "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+    };
+    
+    AddBind(std::make_shared<Bind::InputLayout>(gfx, ied, pvsbc));
+
+    AddBind(std::make_shared<Bind::Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+    AddBind(std::make_shared<Bind::TransformCbuf>(gfx, *this));
 }
-	
 
 void SolidSphere::SetPos(DirectX::XMFLOAT3 pos) noexcept
 {
-	this->pos = pos;
+    this->pos = pos;
 }
 
 DirectX::XMMATRIX SolidSphere::GetTransformXM() const noexcept
 {
-	return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+    return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 }

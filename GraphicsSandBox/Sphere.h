@@ -1,16 +1,19 @@
 #pragma once
+
+#include "VertexSystem.h"
 #include "IndexedTrigList.h"
 #include "Math.h"
 
 #include <DirectXMath.h>
 
-class Sphere
+#include <optional>
+
+class Sphere    
 {
 public:
 
     ///UV SPHERE
-    template<typename V>
-    static IndexedTrigList<V> MakeUVSphere(int stacks, int sectors)
+    static IndexedTrigList MakeUVSphere(DVS::VertexLayout layout, int stacks, int sectors)
     {
         assert(stacks >= 2);
         assert(sectors >= 2);
@@ -22,7 +25,7 @@ public:
 
         float stackAngle, sectorAngle;
 
-        std::vector<V> vertices;
+        DVS::VertexBuffer vb{ std::move(layout) };
 
         for (int i = 0; i <= stacks; i++)
         {
@@ -36,7 +39,8 @@ public:
             
             for (int j = 0; j <= sectors; j++)
             {
-                vertices.emplace_back();
+
+                DirectX::XMFLOAT3 calculatedPos;
 
                 sectorAngle = j * longitudeAngle;
 
@@ -45,7 +49,8 @@ public:
 
                 const auto vertex = DirectX::XMVectorSet(x, y, z, 0.0f);
 
-                DirectX::XMStoreFloat3(&vertices.back().pos, vertex);
+                DirectX::XMStoreFloat3(&calculatedPos, vertex);
+                vb.EmplaceBack(calculatedPos);
             }
 
         }
@@ -81,15 +86,15 @@ public:
             }
         }
 
-        return { std::move(vertices),std::move(indices) };
+        return { std::move(vb),std::move(indices) };
 
     }
 
 
     ///ICOSPHERE
 
-    template<typename V>
-    static IndexedTrigList<V> MakeIcoSphere()
+  
+    static IndexedTrigList MakeIcoSphere()
     {
         
 
@@ -97,17 +102,20 @@ public:
 
 
     ///CUBESPHERE
-    template<typename V>
-    static IndexedTrigList<V> MakeCubeSphere()
+    
+    static IndexedTrigList MakeCubeSphere()
     {
-
+         
     }
 
 
-    template<typename V>
-    static IndexedTrigList<V> Make()
+    static IndexedTrigList Make(std::optional<DVS::VertexLayout> layout = std::nullopt)
     {
-        return MakeUVSphere<V>(32, 32);
-       // return MakeIcoSphere<V>();
+        using Element = DVS::VertexLayout::ElementType;
+        if (!layout)
+        {
+            layout = DVS::VertexLayout{}.Append(Element::Position3D);
+        }
+       return MakeUVSphere(std::move(*layout),  32, 32);
     }
 };
