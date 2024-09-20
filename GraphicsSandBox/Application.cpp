@@ -26,11 +26,8 @@ Application::Application() : wnd( 1280, 720, "Window" ), light(wnd.Gfx())
 {
 
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
-   // wnd.DisableCursor();
 
-    auto a = Bind::VertexShader::Resolve(wnd.Gfx(), "PhongVS.cso");
-    auto b = Bind::Sampler::Resolve(wnd.Gfx());
-    auto c = Bind::Sampler::Resolve(wnd.Gfx());
+
 }
 
 void Application::ShowRawInputWindow()
@@ -82,7 +79,7 @@ void Application::DoFrame()
     light.Bind(wnd.Gfx(), camera.GetMatrix());
 
     nano.Draw(wnd.Gfx());
-
+    nano2.Draw(wnd.Gfx());
 
     //const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
     //auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
@@ -166,6 +163,8 @@ void Application::DoFrame()
     camera.ShowControlWND();
     light.CreateControlWindow();
     nano.ShowWindow();
+    nano2.ShowWindow();
+
 
     //ShowRawInputWindow();
 

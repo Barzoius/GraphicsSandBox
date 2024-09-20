@@ -10,28 +10,25 @@ namespace Bind
     {
     public:
       
-        VertexBuffer(Graphics& gfx, const DVS::VertexBuffer& vbuf)
-            :
-            stride((UINT)vbuf.GetLayout().Size())
-        {
-            INFO_MANAGER(gfx);
-
-            D3D11_BUFFER_DESC BD = {};
-            BD.ByteWidth = UINT(vbuf.SizeBytes());
-            BD.Usage = D3D11_USAGE_DEFAULT;
-            BD.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-            BD.CPUAccessFlags = 0u;
-            BD.MiscFlags = 0u;
-            BD.StructureByteStride = stride;
-
-            D3D11_SUBRESOURCE_DATA SD = {};
-            SD.pSysMem = vbuf.GetData();
-            GFX_THROW_INFO(GetDevice(gfx)->CreateBuffer(&BD, &SD, &pVertexBuffer));
-        }
+        VertexBuffer(Graphics& gfx, const std::string& identityTag, const DVS::VertexBuffer& vbuf);
+        
+        VertexBuffer(Graphics& gfx, const DVS::VertexBuffer& vbuf);
 
         void Bind(Graphics& gfx) noexcept override;
 
+        static std::shared_ptr<VertexBuffer> Resolve(Graphics& gfx, const std::string& tag,const DVS::VertexBuffer& vbuf);
+        template<typename...Ignore>
+        static std::string GenerateUID(const std::string& tag, Ignore&&...ignore)
+        {
+            return GenerateUID_(tag);
+        }
+        std::string GetUID() const noexcept override;
+
+    private:
+        static std::string GenerateUID_(const std::string& tag);
+
     protected:
+        std::string mIdentityTag;
         UINT stride;
         Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
     };

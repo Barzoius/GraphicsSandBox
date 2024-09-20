@@ -3,26 +3,50 @@
 #include "imgui/imgui.h"
 
 #include <unordered_map>
-
+#include <sstream>
 
 #include "Surface.h"
 
 
-///=======================================================|||
-///                                                       |||
-///                          MESH                         |||
-///                                                       |||
-///=======================================================|||
+ModelException::ModelException(int line, const char* file, std::string note) noexcept
+    :
+    ModException(line, file),
+    note(std::move(note))
+{}
+
+const char* ModelException::what() const noexcept
+{
+    std::ostringstream oss;
+    oss << ModException::what() << std::endl
+        << "[Note] " << GetNote();
+    whatBuffer = oss.str();
+    return whatBuffer.c_str();
+}
+
+const char* ModelException::GetType() const noexcept
+{
+    return "Model Exception";
+}
+
+const std::string& ModelException::GetNote() const noexcept
+{
+    return note;
+}
+
+
+//=======================================================|||
+//                                                       |||
+//                          MESH                         |||
+//                                                       |||
+//=======================================================|||
 
 Mesh::Mesh(Graphics& gfx, std::vector<std::shared_ptr<Bind::Bindable>> bindPtrs)
 {
-    AddBind(std::make_shared < Bind::Topology >(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+    AddBind(Bind::Topology::Resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-    for (auto& p : bindPtrs)
+    for (auto& pb : bindPtrs)
     {
-       
-        AddBind(std::move(p));
-        
+        AddBind(std::move(pb));
     }
 
     AddBind(std::make_shared<Bind::TransformCbuf>(gfx, *this));
@@ -205,26 +229,29 @@ Model::Model(Graphics& gfx, const std::string fileName)
     Assimp::Importer imp;
     const auto pScene = imp.ReadFile(fileName.c_str(),
         aiProcess_Triangulate |
-        aiProcess_JoinIdenticalVertices
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_ConvertToLeftHanded |
+        aiProcess_GenNormals
     );
+
+    if (pScene == nullptr)
+    {
+        throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
+    }
 
     for (size_t i = 0; i < pScene->mNumMeshes; i++)
     {
         meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
     }
 
-    int nextID = 0;
-    pRoot = ParseNode(nextID, *pScene->mRootNode);
+    int nextId = 0;
+    pRoot = ParseNode(nextId, *pScene->mRootNode);
 }
 
 Model::~Model() noexcept {}
 
 void Model::Draw(Graphics& gfx) const
 {
-    //const auto transform = DirectX::XMMatrixRotationRollPitchYaw(pos.roll, pos.pitch, pos.yaw) *
-    //    DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-
-    //pRoot->Draw(gfx, transform);
 
     if (auto node = pWindow->GetSelectedNode())
     {
@@ -245,32 +272,30 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
                                        const aiMaterial* const* pMaterials)
 {
     using DVS::VertexLayout;
+    using namespace Bind;
 
-    DVS::VertexBuffer vbuf(std::move(VertexLayout{}
+
+    DVS::VertexBuffer vbuf(std::move(
+        VertexLayout{}
         .Append(VertexLayout::Position3D)
         .Append(VertexLayout::Normal)
-        .Append(VertexLayout::Texture2D) ));
+        .Append(VertexLayout::Texture2D)
+    ));
 
     
     for (unsigned int i = 0; i < mesh.mNumVertices; i++)
     {
-        //vbuf.EmplaceBack(* reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mVertices[i]),
-        //                 * reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mNormals[i]));
-
-        //DirectX::XMFLOAT3 scaledVertex = {
-        //mesh.mVertices[i].x * 0.2f,
-        //mesh.mVertices[i].y * 0.2f,
-        //mesh.mVertices[i].z * 0.2f
-        //};
 
         vbuf.EmplaceBack(
             *reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mVertices[i]),
             *reinterpret_cast<DirectX::XMFLOAT3*>(&mesh.mNormals[i]),
-            *reinterpret_cast<DirectX::XMFLOAT2*>(&mesh.mTextureCoords[0][i]));
+            *reinterpret_cast<DirectX::XMFLOAT2*>(&mesh.mTextureCoords[0][i])
+        );
             
     }
 
     std::vector<unsigned short> indices;
+   
     indices.reserve(mesh.mNumFaces * 3);
 
     for (unsigned int i = 0; i < mesh.mNumFaces; i++)
@@ -282,53 +307,57 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
         indices.push_back(face.mIndices[2]);
     }
 
-    std::vector<std::shared_ptr<Bind::Bindable>> bindablePtrs;
+    std::vector<std::shared_ptr<Bindable>> bindablePtrs;
 
     bool hasSpecMap = false;
     float shininess = 35.0f;
 
+    using namespace std::string_literals;
+    const auto base = "Resources\\Models\\nano_textured\\"s;
+
     if (mesh.mMaterialIndex > 0)
     {
-        using namespace std::string_literals;
-        const auto base = "Resources\\Models\\nano_textured\\"s;
-
+            
         auto& material = *pMaterials[mesh.mMaterialIndex];
         aiString texFileName;
+
         material.GetTexture(aiTextureType_DIFFUSE, 0 , &texFileName);
-        bindablePtrs.push_back(std::make_shared<Bind::Texture>(gfx, Surface::FromFile(base + texFileName.C_Str())));
+        bindablePtrs.push_back(Texture::Resolve(gfx, base + texFileName.C_Str()));
         
-       if( material.GetTexture( aiTextureType_SPECULAR,0,&texFileName ) == aiReturn_SUCCESS )
-       {   
-           bindablePtrs.push_back( std::make_shared<Bind::Texture>( gfx,Surface::FromFile( base + texFileName.C_Str() ),1 ) );
-           hasSpecMap = true;
-       }
-       else
-       {
-           material.Get(AI_MATKEY_SHININESS, shininess);
-       }
+        if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
+        {
+            bindablePtrs.push_back(Texture::Resolve(gfx, base + texFileName.C_Str(), 1));
+            hasSpecMap = true;
+        }
+        else
+        {
+            material.Get(AI_MATKEY_SHININESS, shininess);
+        }
         
-        bindablePtrs.push_back(std::make_shared<Bind::Sampler>(gfx));
+       bindablePtrs.push_back( Bind::Sampler::Resolve(gfx));
     }
 
-    bindablePtrs.push_back(std::make_shared<Bind::VertexBuffer>(gfx, vbuf));
+    auto meshTag = base + "%" + mesh.mName.C_Str();
 
-    bindablePtrs.push_back(std::make_shared<Bind::IndexBuffer>(gfx, indices));
 
-    auto pvs = std::make_shared<Bind::VertexShader>(gfx, "PhongVS.cso");
+    bindablePtrs.push_back(VertexBuffer::Resolve(gfx, meshTag, vbuf));
+
+    bindablePtrs.push_back(IndexBuffer::Resolve(gfx, meshTag, indices));
+
+    auto pvs = VertexShader::Resolve(gfx, "PhongVS.cso");
     auto pvsbc = pvs->GetBytecode();
     bindablePtrs.push_back(std::move(pvs));
 
-    //bindablePtrs.push_back(std::make_unique<Bind::PixelShader>(gfx, L"PhongPS.cso"));
 
-    bindablePtrs.push_back(std::make_shared<Bind::InputLayout>(gfx, vbuf.GetLayout().GetD3DLayout(), pvsbc));
+    bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
 
     if (hasSpecMap)
     {
-        bindablePtrs.push_back(std::make_shared<Bind::PixelShader>(gfx, L"PhongPS_SpecMap.cso"));
+       bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongPS_SpecMap.cso"));
     }
     else
     {
-        bindablePtrs.push_back(std::make_shared<Bind::PixelShader>(gfx, L"PhongPS.cso"));
+        bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongPS.cso"));
 
         struct PSMaterialConstant
         {
@@ -339,13 +368,14 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         pmc.specularPower = shininess;
 
-        bindablePtrs.push_back(std::make_shared<Bind::PixelConstantBuffer<PSMaterialConstant>>(gfx, pmc, 1u));
+        bindablePtrs.push_back(PixelConstantBuffer<PSMaterialConstant>::Resolve(gfx, pmc, 1u));
     }
 
     
     return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 
 }
+
 
 std::unique_ptr<Node> Model::ParseNode(int& nextID, const aiNode& node) noexcept
 {
@@ -371,3 +401,4 @@ std::unique_ptr<Node> Model::ParseNode(int& nextID, const aiNode& node) noexcept
 
     return pNode;
 }
+

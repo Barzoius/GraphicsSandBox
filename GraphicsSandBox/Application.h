@@ -40,14 +40,6 @@ private:
     bool show_imgui_demo = true;
 
     Model nano{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
+    Model nano2{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
 
-    struct
-    {
-        float roll = 0.0f;
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
-    } pos;
 };
