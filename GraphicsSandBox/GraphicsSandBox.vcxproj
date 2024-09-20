@@ -204,6 +204,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="BindableObjects.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
@@ -231,7 +232,6 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="ModException.h" />
     <ClInclude Include="ModWin.h" />
     <ClInclude Include="Mouse.h" />

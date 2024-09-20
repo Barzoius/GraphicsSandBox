@@ -12,6 +12,12 @@ namespace Bind
         virtual void Bind(Graphics& gfx) = 0;
         virtual ~Bindable() = default;
 
+        virtual std::string GetUID() const noexcept
+        {
+            assert(false);
+            return "";
+        }
+
     protected:
 
         static ID3D11DeviceContext* GetContext(Graphics& gfx) noexcept;
