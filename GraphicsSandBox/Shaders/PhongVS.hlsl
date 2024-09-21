@@ -7,7 +7,7 @@ cbuffer CBuf
 
 struct VSOut
 {
-    float3 cameraPos : Position;
+    float3 viewPos : Position;
     float3 normal : Normal;
     float2 tc : TEXCOORD;
     float4 pos : SV_Position;
@@ -17,7 +17,7 @@ struct VSOut
 VSOut main( float3 pos : Position, float3 n : Normal, float2 tc : Texcoord )
 {
     VSOut vso;
-    vso.cameraPos = (float3)mul(float4(pos, 1.0f), modelView);
+    vso.viewPos = (float3)mul(float4(pos, 1.0f), modelView);
     vso.normal = mul(n, (float3x3)modelView);
     vso.pos = mul(float4(pos, 1.0f), modelViewProj);
     vso.tc = tc;

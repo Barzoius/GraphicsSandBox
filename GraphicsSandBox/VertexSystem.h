@@ -28,6 +28,8 @@ namespace DVS
             Position3D,
             Texture2D,
             Normal,
+            Tangent,
+            Bitangent,
             Float3Color,
             Float4Color,
             RGBAColor,
@@ -63,6 +65,21 @@ namespace DVS
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
             static constexpr const char* semantic = "Normal";
             static constexpr const char* code = "NOR";
+        };
+
+        template<> struct Map<Tangent>
+        {
+            using SysType = DirectX::XMFLOAT3;
+            static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            static constexpr const char* semantic = "Tangent";
+            static constexpr const char* code = "NT";
+        };
+        template<> struct Map<Bitangent>
+        {
+            using SysType = DirectX::XMFLOAT3;
+            static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            static constexpr const char* semantic = "Bitangent";
+            static constexpr const char* code = "NB";
         };
         template<> struct Map<Float3Color>
         {
@@ -118,6 +135,10 @@ namespace DVS
                     return sizeof(DirectX::XMFLOAT2);
                 case Normal:
                     return sizeof(DirectX::XMFLOAT3);
+                case Tangent:
+                    return sizeof(Map<Tangent>::SysType);
+                case Bitangent:
+                    return sizeof(Map<Bitangent>::SysType);
                 case Float3Color:
                     return sizeof(DirectX::XMFLOAT3);
                 case Float4Color:
@@ -150,6 +171,12 @@ namespace DVS
                 case Normal:
                     return GenerateDesc<Normal>(GetOffset());
 
+                case Tangent:
+                    return GenerateDesc<Tangent>(GetOffset());
+
+                case Bitangent:
+                    return GenerateDesc<Bitangent>(GetOffset());
+
                 case Float3Color:
                     return GenerateDesc<Float3Color>(GetOffset());
 
@@ -178,6 +205,10 @@ namespace DVS
                         return Map<Texture2D>::code;
                     case Normal:
                         return Map<Normal>::code;
+                    case Tangent:
+                        return Map<Tangent>::code;
+                    case Bitangent:
+                        return Map<Bitangent>::code;
                     case Float3Color:
                         return Map<Float3Color>::code;
                     case Float4Color:
@@ -307,6 +338,13 @@ namespace DVS
                 SetAttribute<VertexLayout::Normal>(pAttribute, std::forward<T>(value));
                 break;
 
+            case VertexLayout::Tangent:
+                SetAttribute<VertexLayout::Tangent>(pAttribute, std::forward<T>(value));
+                break;
+            case VertexLayout::Bitangent:
+                SetAttribute<VertexLayout::Bitangent>(pAttribute, std::forward<T>(value));
+                break;
+
             case VertexLayout::Float3Color:
                 SetAttribute<VertexLayout::Float3Color>(pAttribute, std::forward<T>(value));
                 break;
@@ -385,8 +423,21 @@ namespace DVS
     class VertexBuffer
     {
     public:
-        VertexBuffer(VertexLayout layout) noexcept : layout(std::move(layout)) {}
+        VertexBuffer(VertexLayout layout, size_t size = 0u) noexcept 
+            : layout(std::move(layout)) 
+        {
+            Resize(size);
+        }
 
+
+        void Resize(size_t newSize) noexcept
+        {
+            const auto size = Size();
+            if (size < newSize)
+            {
+                buffer.resize(buffer.size() + layout.Size() * (newSize - size));
+            }
+        }
 
         const char* GetData() const noexcept
         {

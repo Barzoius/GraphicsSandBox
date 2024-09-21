@@ -7,6 +7,7 @@
 #include "Mesh.h"
 
 #include "TestPlane.h"
+//#include "TestCube.h"
 
 #include "PointLight.h"
 
@@ -40,9 +41,13 @@ private:
     float speedFactor = 1.0f;
     bool show_imgui_demo = true;
 
-    Model nano{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
+    /*Model nano{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
     Model nano2{ wnd.Gfx(), "Resources\\Models\\nano_textured\\nanosuit.obj" };
 
-    TestPlane plane;
+    TestPlane plane;*/
+
+    Model wall{ wnd.Gfx(),"Resources\\Models\\brick_wall\\brick_wall.obj" };
+
+    //TestCube cube;
 
 };

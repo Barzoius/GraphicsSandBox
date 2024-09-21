@@ -25,10 +25,12 @@ using namespace DVS;
 Application::Application() 
     : 
     wnd( 1280, 720, "Window" ), 
-    light(wnd.Gfx()),
-    plane(wnd.Gfx(), 3.0f)
+    light(wnd.Gfx())/*,
+    plane(wnd.Gfx(), 3.0f),
+    cube(wnd.Gfx(), 3.0f)*/
 {
-    plane.SetPos({ 1.0f,17.0f,-1.0f });
+    //plane.SetPos({ 1.0f,17.0f,-1.0f });
+    //cube.SetPos({ 1.0f,10.0f,-1.0f });
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
 
 }
@@ -81,16 +83,18 @@ void Application::DoFrame()
 
     light.Bind(wnd.Gfx(), camera.GetMatrix());
 
-    nano.Draw(wnd.Gfx());
-    nano2.Draw(wnd.Gfx());
+    //nano.Draw(wnd.Gfx());
+    //nano2.Draw(wnd.Gfx());
 
     //const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
     //auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
     //model->Draw(wnd.Gfx());
-
+    wall.Draw(wnd.Gfx());
     light.Draw(wnd.Gfx());
 
-    plane.Draw( wnd.Gfx() );
+    //plane.Draw( wnd.Gfx() );
+    //cube.Draw(wnd.Gfx());
+
 
     while (const auto e = wnd.kbd.ReadKey())
     {
@@ -166,10 +170,15 @@ void Application::DoFrame()
     //}
     //ImGui::End();
     camera.ShowControlWND();
+
     light.CreateControlWindow();
-    nano.ShowWindow();
+
+    wall.ShowWindow("Wall");
+    /*nano.ShowWindow();
     nano2.ShowWindow();
-    plane.SpawnWindow(wnd.Gfx());
+    plane.SpawnWindow(wnd.Gfx());*/
+    //cube.SpawnWindow(wnd.Gfx());
+
 
 
     //ShowRawInputWindow();

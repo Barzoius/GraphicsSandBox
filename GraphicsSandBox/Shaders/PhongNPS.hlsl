@@ -25,25 +25,30 @@ cbuffer TransformCBuf
 };
 
 Texture2D tex;
-Texture2D nmap;
+Texture2D nmap : register(t2);
 
 SamplerState splr;
 
 
-float4 main(float3 worldPos : Position, float3 n : Normal, float2 tc : Texcoord) : SV_Target
+float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
     if (hasNMap)
     {
+        const float3x3 tanToView = float3x3(
+            normalize(tan),
+            normalize(bitan),
+            normalize(n)
+        );
+        
         const float3 nSample = nmap.Sample(splr, tc).xyz;
         
-        n.x = nSample.x * 2.0f - 1.0f;
-        n.y = -nSample.y * 2.0f + 1.0f; // 0.0 is upper right corner !!!!
-        n.z = -nSample.z; 
+        n = nSample * 2.0f - 1.0f;
+        n.y = -n.y;
 
-        n = mul(n, (float3x3) modelView);
+        n = mul(n, tanToView);
     }
     
-    const float3 vToL = lightPos - worldPos;
+    const float3 vToL = lightPos - viewPos;
     const float distToL = length(vToL);
     const float3 dirToL = vToL / distToL;
     
@@ -60,7 +65,7 @@ float4 main(float3 worldPos : Position, float3 n : Normal, float2 tc : Texcoord)
     const float3 r = w * 2.0f - vToL;
     
     const float3 specular = attenuation * (diffuseColor * diffuseIntensity) * specularIntensity *
-                            pow(max(0.0f, dot(normalize(-r), normalize(worldPos))), specularPower);
+                            pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
 
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular), 1.0f);
 }
