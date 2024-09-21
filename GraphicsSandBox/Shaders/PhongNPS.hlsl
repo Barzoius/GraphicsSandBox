@@ -18,6 +18,12 @@ cbuffer ObjectCBuf
     float padding[1];
 };
 
+cbuffer TransformCBuf
+{
+    matrix modelView;
+    matrix modelViewProj;
+};
+
 Texture2D tex;
 Texture2D nmap;
 
@@ -31,9 +37,10 @@ float4 main(float3 worldPos : Position, float3 n : Normal, float2 tc : Texcoord)
         const float3 nSample = nmap.Sample(splr, tc).xyz;
         
         n.x = nSample.x * 2.0f - 1.0f;
-        n.y = -nSample.y * 2.0f - 1.0f; // 0.0 is upper right corner !!!!
+        n.y = -nSample.y * 2.0f + 1.0f; // 0.0 is upper right corner !!!!
         n.z = -nSample.z; 
 
+        n = mul(n, (float3x3) modelView);
     }
     
     const float3 vToL = lightPos - worldPos;
