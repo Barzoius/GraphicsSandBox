@@ -90,7 +90,9 @@ void Application::DoFrame()
     //const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
     //auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
     //model->Draw(wnd.Gfx());
-    wall.Draw(wnd.Gfx());
+    //wall.Draw(wnd.Gfx());
+    goblin.Draw(wnd.Gfx());
+
     light.Draw(wnd.Gfx());
 
     //plane.Draw( wnd.Gfx() );
@@ -174,7 +176,9 @@ void Application::DoFrame()
 
     light.CreateControlWindow();
 
-    wall.ShowWindow("Wall");
+    //wall.ShowWindow("Wall");
+    goblin.ShowWindow("GOBLIN_MODE");
+
     /*nano.ShowWindow();
     nano2.ShowWindow();
     plane.SpawnWindow(wnd.Gfx());*/
