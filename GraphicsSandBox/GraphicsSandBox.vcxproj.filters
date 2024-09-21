@@ -334,5 +334,7 @@
     <FxCompile Include="Shaders\PhongPS_SpecMap_NMap.hlsl" />
     <FxCompile Include="Shaders\PhongNPS.hlsl" />
     <FxCompile Include="Shaders\PhongTBNVS.hlsl" />
+    <FxCompile Include="Shaders\PhongVS_NOTEX.hlsl" />
+    <FxCompile Include="Shaders\PhongPS_NOTEX.hlsl" />
   </ItemGroup>
 </Project>
