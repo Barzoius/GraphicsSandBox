@@ -64,8 +64,8 @@
 ## Normal Mapping
 | No NMap | With NMap |
 |---|---|
-|  ![](GraphicsSandBox/Resources/ForREADME/NO_NMap.png) | ![](GraphicsSandBox/Resources/ForREADME/With_NMap.png) |
+|  ![](GraphicsSandBox/Resources/ForREADME/NO_NMAP.png) | ![](GraphicsSandBox/Resources/ForREADME/WITH_NMAP.png) |
 
 | No NMap/Zero Specular Power| With NMap/Zero Specular Power |
 |---|---|
-|  ![](GraphicsSandBox/Resources/ForREADME/NO_NMap_NO_SPECPOW.png) | ![](GraphicsSandBox/Resources/ForREADME/WITH_NMAP_NO_SPECPOW.png) |
+|  ![](GraphicsSandBox/Resources/ForREADME/NO_NMAP_NO_SPECPOW.png) | ![](GraphicsSandBox/Resources/ForREADME/WITH_NMAP_NO_SPECPOW.png) |
