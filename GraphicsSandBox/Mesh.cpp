@@ -283,6 +283,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
     bool hasSpecMap = false;
     bool hasNMap = false;
     bool hasDiffMap = false;
+    bool hasAlphaGloss = false;
 
     float shininess = 35.0f;
 
@@ -309,10 +310,14 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
         {
-            bindablePtrs.push_back(Texture::Resolve(gfx, base + texFileName.C_Str(), 1));
+            auto tex = Texture::Resolve(gfx, base + texFileName.C_Str(), 1);
+            hasAlphaGloss = tex->HasAlpha();
+            bindablePtrs.push_back(std::move(tex));
+
             hasSpecMap = true;
         }
-        else
+
+        if (!hasAlphaGloss)
         {
             material.Get(AI_MATKEY_SHININESS, shininess);
         }
@@ -321,7 +326,10 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
         {
-            bindablePtrs.push_back(Texture::Resolve(gfx, base + texFileName.C_Str(), 2));
+            auto tex = Texture::Resolve(gfx, base + texFileName.C_Str(), 2);
+            hasAlphaGloss = tex->HasAlpha();
+            bindablePtrs.push_back(std::move(tex));
+
             hasNMap = true;
         }
 
@@ -384,8 +392,13 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
         struct PSMaterialConstantFullmonte
         {
             BOOL  normalMapEnabled = TRUE;
-            float padding[3];
+            BOOL  hasGlossMap;
+            float specularPower;
+            float padding[1];
         } pmc;
+
+        pmc.specularPower = shininess;
+        pmc.hasGlossMap = hasAlphaGloss ? TRUE : FALSE;
 
         bindablePtrs.push_back(PixelConstantBuffer<PSMaterialConstantFullmonte>::Resolve(gfx, pmc, 1u));
     }
@@ -537,7 +550,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         struct PSMaterialConstantNotex
         {
-            DirectX::XMFLOAT4 materialColor = { 0.65f,0.65f,0.85f,1.0f };
+            DirectX::XMFLOAT4 materialColor = { 0.45f,0.45f,0.85f,1.0f };
             float specularIntensity = 0.18f;
             float specularPower;
             float padding[2];

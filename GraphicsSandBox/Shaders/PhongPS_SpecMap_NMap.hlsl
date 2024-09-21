@@ -13,7 +13,9 @@ cbuffer ObjectCBuf
 {
 
     bool hasNMap;
-    float padding[3];
+    bool hasGloss;
+    float specularPowerConst;
+    float padding[1];
 };
 
 Texture2D tex;

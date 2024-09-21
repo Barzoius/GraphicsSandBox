@@ -1,4 +1,4 @@
-#define FULL_WINTARD
+    #define FULL_WINTARD
 
 #include "Surface.h"
 
@@ -100,6 +100,8 @@ Surface Surface::FromFile(const std::string& sourceFile)
     unsigned int height = 0;
     std::unique_ptr<Color[]> pBuffer = nullptr;
 
+    bool alphaLoaded = false;
+
     //needed for Gdiplus
     wchar_t wideName[512];
     mbstowcs_s(nullptr, wideName, sourceFile.c_str(), _TRUNCATE);
@@ -126,10 +128,15 @@ Surface Surface::FromFile(const std::string& sourceFile)
             Gdiplus::Color c;
             bitmap.GetPixel(x, y, &c);
             pBuffer[y * width + x] = c.GetValue();
+
+            if (c.GetAlpha() != 255)
+            {
+                alphaLoaded = true;
+            }
         }
     }
 
-    return Surface(width, height, std::move(pBuffer));
+    return Surface(width, height, std::move(pBuffer), alphaLoaded);
 }
 
 
@@ -205,11 +212,12 @@ void Surface::Copy(const Surface& src) noexcept
     memcpy(pBuffer.get(), src.pBuffer.get(), width * height * sizeof(Color));
 }
 
-Surface::Surface(unsigned int width, unsigned int height, std::unique_ptr<Color[]> pBufferParam) noexcept
+Surface::Surface(unsigned int width, unsigned int height, std::unique_ptr<Color[]> pBufferParam, bool alphaLoaded) noexcept
     :
     width(width),
     height(height),
-    pBuffer(std::move(pBufferParam))
+    pBuffer(std::move(pBufferParam)),
+    alphaLoaded(alphaLoaded)
 {}
 
 
@@ -259,4 +267,10 @@ Surface Surface::CreateHeightMap(unsigned int width, unsigned int height)
     Surface S =  Surface(width, height, std::move(pBuffer));
     S.Save("Resources\\HeightMaps\\IMG??.bmp");
     return S;
+}
+
+
+bool Surface::AlphaLoaded() const noexcept
+{
+    return alphaLoaded;
 }
