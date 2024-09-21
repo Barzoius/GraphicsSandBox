@@ -13,9 +13,11 @@ cbuffer ObjectCBuf
 {
 
     bool hasNMap;
+    bool hasSpec;
     bool hasGloss;
     float specularPowerConst;
-    float padding[1];
+    float3 specColor;
+    float specWeight;
 };
 
 Texture2D tex;
@@ -60,9 +62,27 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
     const float3 w = n * dot(vToL, n);
     const float3 r = w * 2.0f - vToL;
     
-    const float4 specularSample = spec.Sample(splr, tc);
-    const float3 specularReflectionColor = specularSample.rgb;
-    const float specularPower = pow(2.0f, specularSample.a * 13.0f);
+    //const float4 specularSample = spec.Sample(splr, tc);
+    //const float3 specularReflectionColor = specularSample.rgb;
+    //const float specularPower = pow(2.0f, specularSample.a * 13.0f);
+    
+    float3 specularReflectionColor;
+    float specularPower = specularPowerConst;
+    if (hasSpec)
+    {
+        const float4 specularSample = spec.Sample(splr, tc);
+        specularReflectionColor = specularSample.rgb * specWeight;
+        if (hasGloss)
+        {
+            specularPower = pow(2.0f, specularSample.a * 13.0f);
+        }
+        
+    }
+    else
+    {
+        specularReflectionColor = specColor;
+    }
+    
     const float3 specular = attenuation * (diffuseColor * diffuseIntensity) * pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
 
     return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular * specularReflectionColor), 1.0f);

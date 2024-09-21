@@ -177,7 +177,7 @@ void Application::DoFrame()
     light.CreateControlWindow();
 
     //wall.ShowWindow("Wall");
-    goblin.ShowWindow("GOBLIN_MODE");
+    goblin.ShowWindow(wnd.Gfx(), "GOBLIN_MODE");
 
     /*nano.ShowWindow();
     nano2.ShowWindow();

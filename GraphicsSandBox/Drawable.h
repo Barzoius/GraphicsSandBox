@@ -25,8 +25,7 @@ public:
 protected:
     void AddBind(std::shared_ptr<Bind::Bindable> bind) noexcept;
 
-
-protected:
+public:
 	template<class T>
 	T* QueryBindable() noexcept
 	{

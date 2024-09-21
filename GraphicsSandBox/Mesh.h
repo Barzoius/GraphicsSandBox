@@ -4,6 +4,8 @@
 #include "BindableObjects.h"
 #include "VertexSystem.h"
 
+
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -38,6 +40,18 @@ class Node
 {
     friend class Model;
 
+
+public:
+    struct PSMaterialConstantFullmonte 
+    { 
+        BOOL  normalMapEnabled = TRUE; 
+        BOOL  specularMapEnabled = TRUE; 
+        BOOL  hasGlossMap = FALSE; 
+        float specularPower = 3.1f; 
+        DirectX::XMFLOAT3 specularColor = { 0.75f,0.75f,0.75f };
+        float specularMapWeight = 0.671f;
+    };
+
 public:
     Node(int id, const std::string& name, std::vector<Mesh*> meshPtrs, const DirectX::XMMATRIX& transform) ;
     void Draw(Graphics& gfx, DirectX::FXMMATRIX accumulatedTransform) const noexcept;
@@ -47,6 +61,9 @@ public:
     int GetId() const noexcept;
 
     void ShowTree(Node*& pSelectedNode) const noexcept;
+
+
+    void ControlWND(Graphics& gfx, PSMaterialConstantFullmonte& c);
 
 private:
     void AddChild(std::unique_ptr<Node> pChild) noexcept;
@@ -69,7 +86,7 @@ class Model
 public:
     Model(Graphics& gfx, const std::string fileName);
     void Draw(Graphics& gfx) const;
-    void ShowWindow(const char* windowName = nullptr) noexcept;
+    void ShowWindow(Graphics& gfx,const char* windowName = nullptr) noexcept;
 
     ~Model() noexcept;
 

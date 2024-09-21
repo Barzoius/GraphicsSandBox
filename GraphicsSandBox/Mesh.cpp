@@ -160,7 +160,7 @@ int Node::GetId() const noexcept
 class ModelWindow
 {
 public:
-    void Show(const char* windowName, const Node& root) noexcept
+    void Show(Graphics& gfx, const char* windowName, const Node& root) noexcept
     {
         windowName = windowName ? windowName : "Model";
 
@@ -183,6 +183,7 @@ public:
                 ImGui::SliderFloat("X", &transform.x, -20.0f, 20.0f);
                 ImGui::SliderFloat("Y", &transform.y, -20.0f, 20.0f);
                 ImGui::SliderFloat("Z", &transform.z, -20.0f, 20.0f);
+                pSelectedNode->ControlWND(gfx, mc);
             }
         }
         ImGui::End();
@@ -218,6 +219,7 @@ private:
         float z = 0.0f;
     };
 
+    Node::PSMaterialConstantFullmonte mc;
     std::unordered_map<int, TransformParameters> transforms;
 };
 
@@ -263,9 +265,9 @@ void Model::Draw(Graphics& gfx) const
 
 }
 
-void Model::ShowWindow(const char* windowName) noexcept
+void Model::ShowWindow(Graphics& gfx, const char* windowName) noexcept
 {
-    pWindow->Show(windowName, *pRoot);
+    pWindow->Show(gfx, windowName, *pRoot);
 }
 
 
@@ -389,18 +391,23 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
 
-        struct PSMaterialConstantFullmonte
+       /* struct PSMaterialConstantFullmonte
         {
-            BOOL  normalMapEnabled = TRUE;
-            BOOL  hasGlossMap;
+            BOOL hasNMap = TRUE;
+            BOOL hasSpecMap = TRUE;
+            BOOL hasGlossMap;
             float specularPower;
-            float padding[1];
-        } pmc;
+            DirectX::XMFLOAT3 specularColor = { 1.0f,1.0f,1.0f }; 
+            float specularMapWeight = 1.0f;
+        } pmc;*/
 
+        Node::PSMaterialConstantFullmonte pmc;
         pmc.specularPower = shininess;
         pmc.hasGlossMap = hasAlphaGloss ? TRUE : FALSE;
 
-        bindablePtrs.push_back(PixelConstantBuffer<PSMaterialConstantFullmonte>::Resolve(gfx, pmc, 1u));
+        //bindablePtrs.push_back(PixelConstantBuffer<PSMaterialConstantFullmonte>::Resolve(gfx, pmc, 1u));
+        bindablePtrs.push_back(PixelConstantBuffer<Node::PSMaterialConstantFullmonte>::Resolve(gfx, pmc, 1u));
+    
     }
     else if (hasDiffMap && hasNMap)
     {
@@ -595,3 +602,32 @@ std::unique_ptr<Node> Model::ParseNode(int& nextID, const aiNode& node) noexcept
     return pNode;
 }
 
+
+
+////-----DELETE IT-----///////
+
+
+void Node::ControlWND(Graphics& gfx, PSMaterialConstantFullmonte& c)
+{
+    if (meshPtrs.empty())
+    {
+        return;
+    }
+    if (auto pcb = meshPtrs.front()->QueryBindable<Bind::PixelConstantBuffer<PSMaterialConstantFullmonte>>())
+    {
+        ImGui::Text("Material");
+        bool normalMapEnabled = (bool)c.normalMapEnabled;
+        ImGui::Checkbox("Norm Map", &normalMapEnabled);
+        c.normalMapEnabled = normalMapEnabled ? TRUE : FALSE;
+        bool specularMapEnabled = (bool)c.specularMapEnabled;
+        ImGui::Checkbox("Spec Map", &specularMapEnabled);
+        c.specularMapEnabled = specularMapEnabled ? TRUE : FALSE;
+        bool hasGlossMap = (bool)c.hasGlossMap;
+        ImGui::Checkbox("Gloss Alpha", &hasGlossMap);
+        c.hasGlossMap = hasGlossMap ? TRUE : FALSE;
+        ImGui::SliderFloat("Spec Weight", &c.specularMapWeight, 0.0f, 2.0f);
+        ImGui::SliderFloat("Spec Pow", &c.specularPower, 0.0f, 1000.0f, "%f", 5.0f);
+        ImGui::ColorPicker3("Spec Color", reinterpret_cast<float*>(&c.specularColor));
+        pcb->Update(gfx, c);
+    }
+}
