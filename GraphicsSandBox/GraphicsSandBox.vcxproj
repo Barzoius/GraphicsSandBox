@@ -172,6 +172,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="ErrorInfoManager.cpp" />
+    <ClCompile Include="ExtendedTransformCbuf.cpp" />
     <ClCompile Include="GDIPManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="ErrorInfoManager.h" />
+    <ClInclude Include="ExtendedTransformCbuf.h" />
     <ClInclude Include="GDIPManager.h" />
     <ClInclude Include="GFX_MACROS.h" />
     <ClInclude Include="Graphics.h" />

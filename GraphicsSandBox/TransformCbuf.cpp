@@ -14,18 +14,27 @@ namespace Bind
 
     void TransformCbuf::Bind(Graphics& gfx) noexcept
     {
+        Update_Bind(gfx, GetTransforms(gfx));
+    }
+
+    void TransformCbuf::Update_Bind(Graphics& gfx, const Transforms& trans) noexcept
+    {
+        pVcbuf->Update(gfx, trans);
+        pVcbuf->Bind(gfx);
+    }
+
+
+    TransformCbuf::Transforms TransformCbuf::GetTransforms(Graphics& gfx) noexcept
+    {
+
         const auto modelView = parent.GetTransformXM() * gfx.GetCamera();
 
-        const Transforms tf =
-        {
+        return {
             DirectX::XMMatrixTranspose(modelView),
             DirectX::XMMatrixTranspose(
                 modelView *
                 gfx.GetProjection())
         };
-
-        pVcbuf->Update(gfx, tf);
-        pVcbuf->Bind(gfx);
     }
 
     std::unique_ptr<VertexConstantBuffer<TransformCbuf::Transforms>> TransformCbuf::pVcbuf;
