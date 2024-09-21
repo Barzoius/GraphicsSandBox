@@ -37,6 +37,7 @@ Application::Application()
 
 void Application::ShowRawInputWindow()
 {
+
     while(const auto d = wnd.mouse.ReadRawDelta())
     {
         x += d->x;
