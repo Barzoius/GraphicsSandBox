@@ -48,6 +48,7 @@ private:
 
     //Model wall{ wnd.Gfx(),"Resources\\Models\\brick_wall\\brick_wall.obj" };
     Model goblin{ wnd.Gfx(),"Resources\\Models\\Goblin\\GoblinX.obj" };
+  
     //TestCube cube;
 
 };

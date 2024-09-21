@@ -178,6 +178,7 @@ void Application::DoFrame()
 
     //wall.ShowWindow("Wall");
     goblin.ShowWindow(wnd.Gfx(), "GOBLIN_MODE");
+    
 
     /*nano.ShowWindow();
     nano2.ShowWindow();
