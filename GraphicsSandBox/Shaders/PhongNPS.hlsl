@@ -34,7 +34,7 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
 {
     if (hasNMap)
     {
-        const float3x3 tanToView = float3x3(
+        const float3x3 TBN = float3x3(
             normalize(tan),
             normalize(bitan),
             normalize(n)
@@ -42,10 +42,11 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
         
         const float3 nSample = nmap.Sample(splr, tc).xyz;
         
-        n = nSample * 2.0f - 1.0f;
-        n.y = -n.y;
+        float3 tanNormal;
+        tanNormal = nSample * 2.0f - 1.0f;
+        tanNormal.y = -tanNormal.y;
 
-        n = mul(n, tanToView);
+        n = normalize(mul(tanNormal, TBN));
     }
     
     const float3 vToL = lightPos - viewPos;

@@ -21,6 +21,8 @@ cbuffer ObjectCBuf
 float4 main(float3 viewPos : Position, float3 n : Normal) : SV_Target
 {
 
+    n = normalize(n);
+    
     const float3 vToL = lightPos - viewPos;
     const float distToL = length(vToL);
     const float3 dirToL = vToL / distToL;

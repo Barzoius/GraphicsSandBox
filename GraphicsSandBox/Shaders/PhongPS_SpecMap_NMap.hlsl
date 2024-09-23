@@ -25,25 +25,28 @@ Texture2D spec;
 Texture2D nmap;
 SamplerState splr;
 
-
-float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord) : SV_Target
+float3 MapNormals(const float3 tan, const float3 bitan, const float3 n, const float2 tc, Texture2D nmap, SamplerState splr)
 {
-    
-    if (hasNMap)
-    {
-        const float3x3 tanToView = float3x3(
+    const float3x3 TBN = float3x3(
             normalize(tan),
             normalize(bitan),
             normalize(n)
         );
         
-        const float3 nSample = nmap.Sample(splr, tc).xyz;
+    const float3 nSample = nmap.Sample(splr, tc).xyz;
         
-        n.x = nSample.x * 2.0f - 1.0f;
-        n.y = -nSample.y * 2.0f + 1.0f; // 0.0 is upper right corner !!!!
-        n.z = nSample.z * 2.0f - 1.0f;
+    float3 tanNormal;
+    tanNormal = nSample * 2.0f - 1.0f;
 
-        n = mul(n, tanToView);
+     return normalize(mul(tanNormal, TBN));
+}
+
+float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord) : SV_Target
+{
+    
+    if (hasNMap)
+    {  
+        n = MapNormals(tan, bitan, n, tc, nmap, splr);
     }
         
     const float3 vToL = lightPos - viewPos;
