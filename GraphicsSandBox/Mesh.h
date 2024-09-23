@@ -72,6 +72,8 @@ public:
 
     void SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept;
 
+    const DirectX::XMFLOAT4X4& GetAppliedTransform() const noexcept;
+
     int GetId() const noexcept;
 
     void ShowTree(Node*& pSelectedNode) const noexcept;
@@ -139,16 +141,19 @@ private:
 class Model
 {
 public:
-    Model(Graphics& gfx, const std::string& filePath);
+    Model(Graphics& gfx, const std::string& filePath, float scale = 1.0f);
     void Draw(Graphics& gfx) const;
     void ShowWindow(Graphics& gfx,const char* windowName = nullptr) noexcept;
 
     ~Model() noexcept;
 
+    void SetRootTransform(DirectX::FXMMATRIX trans) noexcept;
+
 private:
     static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, 
                                            const aiMaterial* const* pMaterial, // nonconst pointer to a const pointer to a an array of const aiMaterial
-                                           const std::filesystem::path& path); 
+                                           const std::filesystem::path& path,
+                                           float scale);
 
     std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node) noexcept;
 private:

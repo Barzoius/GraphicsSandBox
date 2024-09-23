@@ -3,7 +3,6 @@
 
 cbuffer ObjectCBuf
 {
-
     bool hasNMap;
     bool hasSpec;
     bool hasGloss;

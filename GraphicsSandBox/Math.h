@@ -107,8 +107,15 @@ constexpr QUADRANT get_quadrant(T angle)
 template<typename T>
 T wrap_angle(T theta)
 {
-    const T modded = fmod(theta, (T)2.0 * (T)DPI);
-    return (modded > (T)DPI) ?
-        (modded - (T)2.0 * (T)DPI) :
-        modded;
+    constexpr T twoPi = (T)2 * (T)DPI;
+    const T mod = fmod(theta, twoPi);
+    if (mod > -(T)DPI)
+    {
+        return mod - twoPi;
+    }
+    else if (mod < (T)DPI)
+    {
+        return mod + twoPi;
+    }
+    return mod;
 }

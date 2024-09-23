@@ -6,6 +6,8 @@
 #include <sstream>
 
 #include "Surface.h"
+#include "Utilities.h"
+
 
 
 ModelException::ModelException(int line, const char* file, std::string note) noexcept
@@ -144,6 +146,11 @@ void Node::SetAppliedTransform(DirectX::FXMMATRIX transform) noexcept
     DirectX::XMStoreFloat4x4(&appliedTransform, transform);
 }
 
+const DirectX::XMFLOAT4X4& Node::GetAppliedTransform() const noexcept
+{
+    return appliedTransform;
+}
+
 
 int Node::GetId() const noexcept
 {
@@ -174,7 +181,23 @@ public:
             ImGui::NextColumn();
             if (pSelectedNode != nullptr)
             {
-                auto& transform = transforms[pSelectedNode->GetId()];
+                const auto id = pSelectedNode->GetId();
+                auto i = transforms.find(id);
+                if (i == transforms.end())
+                {
+                    const auto& applied = pSelectedNode->GetAppliedTransform();
+                    const auto angles = ExtractEulerAngles(applied);
+                    const auto translation = ExtractTranslation(applied);
+                    TransformParameters tp;
+                    tp.roll = angles.z;
+                    tp.pitch = angles.x;
+                    tp.yaw = angles.y;
+                    tp.x = translation.x;
+                    tp.y = translation.y;
+                    tp.z = translation.z;
+                    std::tie(i, std::ignore) = transforms.insert({ id,tp });
+                }
+                auto& transform = i->second;
                 ImGui::Text("Orientation");
                 ImGui::SliderAngle("Roll", &transform.roll, -180.0f, 180.0f);
                 ImGui::SliderAngle("Pitch", &transform.pitch, -180.0f, 180.0f);
@@ -230,7 +253,7 @@ private:
 };
 
 
-Model::Model(Graphics& gfx, const std::string& filePath)
+Model::Model(Graphics& gfx, const std::string& filePath, float scale)
     :
     pWindow(std::make_unique<ModelWindow>())
 {
@@ -250,7 +273,7 @@ Model::Model(Graphics& gfx, const std::string& filePath)
 
     for (size_t i = 0; i < pScene->mNumMeshes; i++)
     {
-        meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, filePath));
+        meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, filePath, scale));
     }
 
     int nextId = 0;
@@ -276,9 +299,14 @@ void Model::ShowWindow(Graphics& gfx, const char* windowName) noexcept
     pWindow->Show(gfx, windowName, *pRoot);
 }
 
+void Model::SetRootTransform(DirectX::FXMMATRIX trans) noexcept
+{
+    pRoot->SetAppliedTransform(trans);
+}
+
 
 std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
-    const aiMaterial* const* pMaterials, const std::filesystem::path& path)
+    const aiMaterial* const* pMaterials, const std::filesystem::path& path, float scale)
 {
     using DVS::VertexLayout;
     using namespace Bind;
@@ -358,8 +386,6 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
     }
 
     const auto meshTag = path.string() + "%" + mesh.mName.C_Str();
-
-    const float scale = 6.0f;
 
     if (hasDiffMap && hasSpecMap && hasNMap)
     {
@@ -465,13 +491,13 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
         auto pvsbc = pvs->GetBytecode();
         bindablePtrs.push_back(std::move(pvs));
 
-        bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongPS_SpecMap_NMap.cso"));
+        bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongNPS.cso"));
 
         bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
 
         struct PSMaterialConstantDiffnorm
         {
-            float specularIntensity /*= 0.18f*/;
+            float specularIntensity;
             float specularPower;
             BOOL  normalMapEnabled = TRUE;
             float padding[1];
