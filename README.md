@@ -69,3 +69,10 @@
 | No NMap/Zero Specular Power| With NMap/Zero Specular Power |
 |---|---|
 |  ![](GraphicsSandBox/Resources/ForREADME/NO_NMAP_NO_SPECPOW.png) | ![](GraphicsSandBox/Resources/ForREADME/WITH_NMAP_NO_SPECPOW.png) |
+
+
+## Scene Graph
+
+|Classic Sponza Scene|
+|--------------------|
+|![](GraphicsSandBox/Resources/ForREADME/SCENE_GRAPH_SPONZA.png)|

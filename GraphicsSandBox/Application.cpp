@@ -29,12 +29,12 @@ Application::Application()
     plane(wnd.Gfx(), 3.0f),
     cube(wnd.Gfx(), 3.0f)*/
 {
-    wall.SetRootTransform(DirectX::XMMatrixTranslation(-12.0f, 0.0f, 0.0f));
-    //plane.SetPos({ 12.0f,0.0f,0.0f });
-    goblin.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f));
-    nano.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, -7.0f, 6.0f));
+    //wall.SetRootTransform(DirectX::XMMatrixTranslation(-12.0f, 0.0f, 0.0f));
+    ////plane.SetPos({ 12.0f,0.0f,0.0f });
+    //goblin.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f));
+    //nano.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, -7.0f, 6.0f));
 
-    wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 40.0f));
+    wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 500.0f));
 
 }
 
@@ -92,14 +92,16 @@ void Application::DoFrame()
     //const DirectX::XMFLOAT3 material = { 1.0f, 1.0f, 1.0f };
     //auto model = std::make_unique<TestLoadedModel>(wnd.Gfx(), material, 1.5);
     //model->Draw(wnd.Gfx());
-    nano.Draw(wnd.Gfx());
+    //nano.Draw(wnd.Gfx());
 
-    wall.Draw(wnd.Gfx());
-    //plane.Draw(wnd.Gfx());
+    //wall.Draw(wnd.Gfx());
+    ////plane.Draw(wnd.Gfx());
 
-    goblin.Draw(wnd.Gfx());
+    //goblin.Draw(wnd.Gfx());
 
     light.Draw(wnd.Gfx());
+
+    sponza.Draw(wnd.Gfx());
     //wall.Draw(wnd.Gfx());
 
     //cube.Draw(wnd.Gfx());
@@ -182,8 +184,8 @@ void Application::DoFrame()
 
     light.CreateControlWindow();
 
-    wall.ShowWindow(wnd.Gfx(), "Wall");
-    goblin.ShowWindow(wnd.Gfx(), "GOBLIN_MODE");
+    //wall.ShowWindow(wnd.Gfx(), "Wall");
+    //goblin.ShowWindow(wnd.Gfx(), "GOBLIN_MODE");
     //nano.ShowWindow(wnd.Gfx(), "SUIT");
     //plane.SpawnWindow(wnd.Gfx());
 
@@ -192,7 +194,7 @@ void Application::DoFrame()
     plane.SpawnWindow(wnd.Gfx());*/
    // cube.SpawnWindow(wnd.Gfx());
 
-
+    sponza.ShowWindow(wnd.Gfx(), "Sponza");
 
     //ShowRawInputWindow();
 

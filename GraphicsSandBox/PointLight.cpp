@@ -41,8 +41,8 @@ void PointLight::CreateControlWindow() noexcept
 void PointLight::Reset() noexcept
 {
     cbData = {
-        { 2.0f,9.0f,-17.0f },
-        { 0.4f,0.4f,0.4f },
+        { 10.0f,9.0f,2.5f },
+        { 0.5f,0.5f,0.5f },
         { 1.0f,1.0f,1.0f },
         1.0f,
         1.0f,
