@@ -337,4 +337,7 @@
     <FxCompile Include="Shaders\PhongVS_NOTEX.hlsl" />
     <FxCompile Include="Shaders\PhongPS_NOTEX.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Light.hlsli" />
+  </ItemGroup>
 </Project>

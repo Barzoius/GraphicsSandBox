@@ -10,8 +10,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+
 #include <optional>
 #include <type_traits>
+#include <filesystem>
+
+
 #include "imgui/imgui.h"
 
 
@@ -135,7 +139,7 @@ private:
 class Model
 {
 public:
-    Model(Graphics& gfx, const std::string fileName);
+    Model(Graphics& gfx, const std::string& filePath);
     void Draw(Graphics& gfx) const;
     void ShowWindow(Graphics& gfx,const char* windowName = nullptr) noexcept;
 
@@ -143,7 +147,8 @@ public:
 
 private:
     static std::unique_ptr<Mesh> ParseMesh(Graphics& gfx, const aiMesh& mesh, 
-                                           const aiMaterial* const* pMaterial); // nonconst pointer to a const pointer to a an array of const aiMaterial
+                                           const aiMaterial* const* pMaterial, // nonconst pointer to a const pointer to a an array of const aiMaterial
+                                           const std::filesystem::path& path); 
 
     std::unique_ptr<Node> ParseNode(int& nextId, const aiNode& node) noexcept;
 private:

@@ -1,13 +1,5 @@
-cbuffer LightCBuf
-{
-    float3 lightPos;
-    float3 ambient;
-    float3 diffuseColor;
-    float diffuseIntensity;
-    float attenuationConst;
-    float attenuationLin;
-    float attenuationQuad;
-};
+
+#include "Light.hlsli"
 
 cbuffer ObjectCBuf
 {
@@ -27,11 +19,7 @@ SamplerState splr;
 
 float3 MapNormals(const float3 tan, const float3 bitan, const float3 n, const float2 tc, Texture2D nmap, SamplerState splr)
 {
-    const float3x3 TBN = float3x3(
-            normalize(tan),
-            normalize(bitan),
-            normalize(n)
-        );
+    const float3x3 TBN = float3x3(tan, bitan, n);
         
     const float3 nSample = nmap.Sample(splr, tc).xyz;
         
@@ -43,10 +31,10 @@ float3 MapNormals(const float3 tan, const float3 bitan, const float3 n, const fl
 
 float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
-    
+    n = normalize(n);
     if (hasNMap)
     {  
-        n = MapNormals(tan, bitan, n, tc, nmap, splr);
+        n = MapNormals(normalize(tan), normalize(bitan), n, tc, nmap, splr);
     }
         
     const float3 vToL = lightPos - viewPos;

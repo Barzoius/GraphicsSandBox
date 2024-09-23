@@ -230,12 +230,12 @@ private:
 };
 
 
-Model::Model(Graphics& gfx, const std::string fileName)
+Model::Model(Graphics& gfx, const std::string& filePath)
     :
     pWindow(std::make_unique<ModelWindow>())
 {
     Assimp::Importer imp;
-    const auto pScene = imp.ReadFile(fileName.c_str(),
+    const auto pScene = imp.ReadFile(filePath.c_str(),
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
         aiProcess_ConvertToLeftHanded |
@@ -250,7 +250,7 @@ Model::Model(Graphics& gfx, const std::string fileName)
 
     for (size_t i = 0; i < pScene->mNumMeshes; i++)
     {
-        meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials));
+        meshPtrs.push_back(ParseMesh(gfx, *pScene->mMeshes[i], pScene->mMaterials, filePath));
     }
 
     int nextId = 0;
@@ -278,13 +278,14 @@ void Model::ShowWindow(Graphics& gfx, const char* windowName) noexcept
 
 
 std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
-    const aiMaterial* const* pMaterials)
+    const aiMaterial* const* pMaterials, const std::filesystem::path& path)
 {
     using DVS::VertexLayout;
     using namespace Bind;
 
     using namespace std::string_literals;
 
+    const auto rootPath = path.parent_path().string() + "\\";
 
     std::vector<std::shared_ptr<Bindable>> bindablePtrs;
 
@@ -297,8 +298,6 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
     DirectX::XMFLOAT4 specColor = { 0.18f,0.18f,0.18f,1.0f };
     DirectX::XMFLOAT4 diffColor = { 0.45f,0.45f,0.85f,1.0f };
 
-    //const auto base = "Resources\\Models\\nano_textured\\"s;
-    const auto base = "Resources\\Models\\Goblin\\"s;
 
     if (mesh.mMaterialIndex > 0)
     {
@@ -311,7 +310,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
         {
-            bindablePtrs.push_back(Texture::Resolve(gfx, base + texFileName.C_Str()));
+            bindablePtrs.push_back(Texture::Resolve(gfx, rootPath + texFileName.C_Str()));
             hasDiffMap = true;
         }
         else
@@ -324,7 +323,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         if (material.GetTexture(aiTextureType_SPECULAR, 0, &texFileName) == aiReturn_SUCCESS)
         {
-            auto tex = Texture::Resolve(gfx, base + texFileName.C_Str(), 1);
+            auto tex = Texture::Resolve(gfx, rootPath + texFileName.C_Str(), 1);
             hasAlphaGloss = tex->HasAlpha();
             bindablePtrs.push_back(std::move(tex));
 
@@ -344,7 +343,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         if (material.GetTexture(aiTextureType_NORMALS, 0, &texFileName) == aiReturn_SUCCESS)
         {
-            auto tex = Texture::Resolve(gfx, base + texFileName.C_Str(), 2);
+            auto tex = Texture::Resolve(gfx, rootPath + texFileName.C_Str(), 2);
             hasAlphaGloss = tex->HasAlpha();
             bindablePtrs.push_back(std::move(tex));
 
@@ -358,7 +357,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
         }
     }
 
-    const auto meshTag = base + "%" + mesh.mName.C_Str();
+    const auto meshTag = path.string() + "%" + mesh.mName.C_Str();
 
     const float scale = 6.0f;
 
