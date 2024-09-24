@@ -4,18 +4,20 @@
 class TestPlane : public Drawable
 {
 public:
-	TestPlane(Graphics& gfx, float size);
+	TestPlane(Graphics& gfx, float size, DirectX::XMFLOAT4 color = { 1.0f,1.0f,1.0f,0.0f });
 	void SetPos(DirectX::XMFLOAT3 pos) noexcept;
 	void SetRotation(float roll, float pitch, float yaw) noexcept;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
-	void SpawnWindow(Graphics& gfx) noexcept;
+	void SpawnWindow(Graphics& gfx, const std::string& name) noexcept;
 private:
 	struct PSMaterialConstant
 	{
-		float specIntensity = 0.1f;
-		float specPow = 20.0f;
-		BOOL hasNMap = TRUE; // == INT
-		float padding[1];
+		//float specIntensity = 0.1f;
+		//float specPow = 20.0f;
+		//BOOL hasNMap = TRUE; // == INT
+		//float padding[1];
+
+		DirectX::XMFLOAT4 color;
 	}pmc;
 
 	DirectX::XMFLOAT3 pos = { 1.0f,1.0f,1.0f };

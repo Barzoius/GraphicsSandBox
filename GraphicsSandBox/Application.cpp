@@ -34,6 +34,10 @@ Application::Application()
     //goblin.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f));
     //nano.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, -7.0f, 6.0f));
 
+    bluePlane.SetPos(camera.GetPos());
+    redPlane.SetPos(camera.GetPos());
+    yellowPlane.SetPos(camera.GetPos());
+
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 500.0f));
 
 }
@@ -102,6 +106,10 @@ void Application::DoFrame()
     light.Draw(wnd.Gfx());
 
     sponza.Draw(wnd.Gfx());
+
+    bluePlane.Draw(wnd.Gfx());
+    redPlane.Draw(wnd.Gfx());
+    yellowPlane.Draw(wnd.Gfx());
     //wall.Draw(wnd.Gfx());
 
     //cube.Draw(wnd.Gfx());
@@ -195,6 +203,12 @@ void Application::DoFrame()
    // cube.SpawnWindow(wnd.Gfx());
 
     sponza.ShowWindow(wnd.Gfx(), "Sponza");
+
+    bluePlane.SpawnWindow(wnd.Gfx(), "Blue Plane");
+    redPlane.SpawnWindow(wnd.Gfx(), "Red Plane");
+    yellowPlane.SpawnWindow(wnd.Gfx(), "Yellow Plane");
+
+
 
     //ShowRawInputWindow();
 

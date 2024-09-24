@@ -605,7 +605,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
     bindablePtrs.push_back(Rasterizer::Resolve(gfx, hasAlphaBlend));
 
-    //bindablePtrs.push_back(Blender::Resolve(gfx, hasAlphaBlend));
+    bindablePtrs.push_back(Blender::Resolve(gfx, false));
 
     return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 

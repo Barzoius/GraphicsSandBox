@@ -15,6 +15,9 @@ public:
     void Translate(DirectX::XMFLOAT3 translate) noexcept;
     void Rotate(float dx, float dy) noexcept;
 
+
+    DirectX::XMFLOAT3 GetPos() const noexcept;
+
 private:
     DirectX::XMFLOAT3 pos;
     float pitch;
