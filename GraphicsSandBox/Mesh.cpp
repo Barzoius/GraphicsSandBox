@@ -321,6 +321,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
     bool hasNMap = false;
     bool hasDiffMap = false;
     bool hasAlphaGloss = false;
+    bool hasAlphaBlend = false;
 
     float shininess = 2.0f;
     DirectX::XMFLOAT4 specColor = { 0.18f,0.18f,0.18f,1.0f };
@@ -338,7 +339,9 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         if (material.GetTexture(aiTextureType_DIFFUSE, 0, &texFileName) == aiReturn_SUCCESS)
         {
-            bindablePtrs.push_back(Texture::Resolve(gfx, rootPath + texFileName.C_Str()));
+            auto tex = Texture::Resolve(gfx, rootPath + texFileName.C_Str());
+            hasAlphaBlend = tex->HasAlpha();
+            bindablePtrs.push_back(std::move(tex));
             hasDiffMap = true;
         }
         else
@@ -432,21 +435,10 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
 
         bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
 
-       /* struct PSMaterialConstantFullmonte
-        {
-            BOOL hasNMap = TRUE;
-            BOOL hasSpecMap = TRUE;
-            BOOL hasGlossMap;
-            float specularPower;
-            DirectX::XMFLOAT3 specularColor = { 1.0f,1.0f,1.0f }; 
-            float specularMapWeight = 1.0f;
-        } pmc;*/
-
         Node::PSMaterialConstantFullmonte pmc;
         pmc.specularPower = shininess;
         pmc.hasGlossMap = hasAlphaGloss ? TRUE : FALSE;
 
-        //bindablePtrs.push_back(PixelConstantBuffer<PSMaterialConstantFullmonte>::Resolve(gfx, pmc, 1u));
         bindablePtrs.push_back(PixelConstantBuffer<Node::PSMaterialConstantFullmonte>::Resolve(gfx, pmc, 1u));
     
     }
@@ -611,6 +603,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
         throw std::runtime_error("terrible combination of textures in material smh");
     }
 
+    //bindablePtrs.push_back(Blender::Resolve(gfx, hasAlphaBlend));
 
     return std::make_unique<Mesh>(gfx, std::move(bindablePtrs));
 

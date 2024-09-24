@@ -73,8 +73,11 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
         specularReflectionColor = specColor;
     }
     
+    float4 difftex = tex.Sample(splr, tc);
+    clip(difftex.a < 0.1f ? -1 : 1);
+    
     const float3 specular = attenuation * (diffuseColor * diffuseIntensity) * pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
 
-    return float4(saturate((diffuse + ambient) * tex.Sample(splr, tc).rgb + specular * specularReflectionColor), 1.0f);
+    return float4(saturate((diffuse + ambient) * difftex.rgb + specular * specularReflectionColor), difftex.a);
 }
 

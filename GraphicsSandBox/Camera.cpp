@@ -10,16 +10,6 @@ namespace DX = DirectX;
 
 DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 {
-    //const auto pos = DirectX::XMVector3Transform(
-    //    DirectX::XMVectorSet(0.0f, 0.0f, -r, 0.0f),
-    //    DirectX::XMMatrixRotationRollPitchYaw(phi, -theta, 0.0f)
-    //);
-    //return DirectX::XMMatrixLookAtLH(
-    //    pos, DirectX::XMVectorZero(),
-    //    DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-    //) * DirectX::XMMatrixRotationRollPitchYaw(
-    //    pitch, -yaw, roll
-    //);
 
     using namespace DX;
 
@@ -43,9 +33,9 @@ void Camera::ShowControlWND() noexcept
     if (ImGui::Begin("Camera Controls"))
     {
         ImGui::Text("Position");
-        ImGui::SliderFloat("X", &pos.x, -80.0f, 80.0f, "%.1f");
-        ImGui::SliderAngle("Y", &pos.y, -80.0f, 80.0f , "%.1f");
-        ImGui::SliderAngle("Z", &pos.z, -80.0f, 80.0f, "%.1f");
+        ImGui::SliderFloat("X", &pos.x, -500.0f, 500.0f, "%.1f");
+        ImGui::SliderAngle("Y", &pos.y, -500.0f, 500.0f , "%.1f");
+        ImGui::SliderAngle("Z", &pos.z, -500.0f, 500.0f, "%.1f");
         ImGui::Text("Orientation");
         ImGui::SliderAngle("Pitch", &pitch, 0.9995f * -90.0f, 0.9995f * 90.0f);
         ImGui::SliderAngle("Yaw", &yaw, -180.0f, 180.0f);
