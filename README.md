@@ -82,3 +82,16 @@
 | AF OFF | AF ON |
 |---|---|
 |  ![](GraphicsSandBox/Resources/ForREADME/AF_OFF.png) | ![](GraphicsSandBox/Resources/ForREADME/AF_ON.png) |
+
+
+## Alpha Testing
+
+| WITHOUT ALPHA TESTING | WITH ALPHA TESTING |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/NO_AT.png) | ![](GraphicsSandBox/Resources/ForREADME/WITH_AT.png) |
+
+## Alpha Blending
+
+|  |  |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/AB2.png) | ![](GraphicsSandBox/Resources/ForREADME/AB.png) |
