@@ -30,6 +30,20 @@ float3 MapNormals(const float3 tan, const float3 bitan, const float3 n, const fl
 
 float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : Texcoord) : SV_Target
 {
+    
+    
+    float4 difftex = tex.Sample(splr, tc);    
+    
+    #ifdef MASK
+    
+        clip(difftex.a < 0.1f ? -1 : 1);
+        if (dot(n, viewPos) >= 0.0f)
+        {
+            n = -n;
+        }
+    
+    #endif
+    
     n = normalize(n);
     if (hasNMap)
     {  
@@ -72,9 +86,6 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
     {
         specularReflectionColor = specColor;
     }
-    
-    float4 difftex = tex.Sample(splr, tc);
-    clip(difftex.a < 0.1f ? -1 : 1);
     
     const float3 specular = attenuation * (diffuseColor * diffuseIntensity) * pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
 

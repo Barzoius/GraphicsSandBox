@@ -11,4 +11,5 @@
 #include "Texture.h"
 #include "Sampler.h"
 #include "ExtendedTransformCbuf.h"
+#include "Rasterizer.h"
 #include "Blender.h"

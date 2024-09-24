@@ -431,7 +431,7 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
         auto pvsbc = pvs->GetBytecode();
         bindablePtrs.push_back(std::move(pvs));
 
-        bindablePtrs.push_back(PixelShader::Resolve(gfx, "PhongPS_SpecMap_NMap.cso"));
+        bindablePtrs.push_back(PixelShader::Resolve(gfx, hasAlphaBlend ? "PhongPS_SPEC_NMAP_MASK.cso" : "PhongPS_SpecMap_NMap.cso"));
 
         bindablePtrs.push_back(InputLayout::Resolve(gfx, vbuf.GetLayout(), pvsbc));
 
@@ -602,6 +602,8 @@ std::unique_ptr<Mesh> Model::ParseMesh(Graphics& gfx, const aiMesh& mesh,
     {
         throw std::runtime_error("terrible combination of textures in material smh");
     }
+
+    bindablePtrs.push_back(Rasterizer::Resolve(gfx, hasAlphaBlend));
 
     //bindablePtrs.push_back(Blender::Resolve(gfx, hasAlphaBlend));
 
