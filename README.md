@@ -75,4 +75,10 @@
 
 |Classic Sponza Scene|
 |--------------------|
-|![](GraphicsSandBox/Resources/ForREADME/SCENE_GRAPH_SPONZA.png)|
+|![](GraphicsSandBox/Resources/ForREADME/SCENE_GRAPH.png)|
+
+## Anisotropic filtering
+
+| AF OFF | AF ON |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/AF_OFF.png) | ![](GraphicsSandBox/Resources/ForREADME/AF_ON.png) |
