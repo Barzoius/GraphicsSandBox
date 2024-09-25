@@ -1,8 +1,7 @@
-    #include "Application.h"
+#include "Application.h"
 
 #include "Math.h"
 #include "Surface.h"
-#include "GDIPManager.h"
 #include "Torus.h"
 
 #include "ImGui/imgui.h"
@@ -18,7 +17,9 @@
 #include "VertexSystem.h"
 #include "VertexBuffer.h"
 
-GDIPManager gdipm;
+#include "DirectXTex\DirectXTex.h"
+
+
 
 using namespace DVS;
 
@@ -34,6 +35,7 @@ Application::Application()
     //goblin.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f));
     //nano.SetRootTransform(DirectX::XMMatrixTranslation(0.0f, -7.0f, 6.0f));
 
+    
     bluePlane.SetPos(camera.GetPos());
     redPlane.SetPos(camera.GetPos());
     yellowPlane.SetPos(camera.GetPos());
@@ -107,9 +109,9 @@ void Application::DoFrame()
 
     sponza.Draw(wnd.Gfx());
 
-    bluePlane.Draw(wnd.Gfx());
-    redPlane.Draw(wnd.Gfx());
-    yellowPlane.Draw(wnd.Gfx());
+    //bluePlane.Draw(wnd.Gfx());
+    //redPlane.Draw(wnd.Gfx());
+    //yellowPlane.Draw(wnd.Gfx());
     //wall.Draw(wnd.Gfx());
 
     //cube.Draw(wnd.Gfx());
@@ -204,9 +206,9 @@ void Application::DoFrame()
 
     sponza.ShowWindow(wnd.Gfx(), "Sponza");
 
-    bluePlane.SpawnWindow(wnd.Gfx(), "Blue Plane");
-    redPlane.SpawnWindow(wnd.Gfx(), "Red Plane");
-    yellowPlane.SpawnWindow(wnd.Gfx(), "Yellow Plane");
+    //bluePlane.SpawnWindow(wnd.Gfx(), "Blue Plane");
+    //redPlane.SpawnWindow(wnd.Gfx(), "Red Plane");
+    //yellowPlane.SpawnWindow(wnd.Gfx(), "Yellow Plane");
 
 
 
