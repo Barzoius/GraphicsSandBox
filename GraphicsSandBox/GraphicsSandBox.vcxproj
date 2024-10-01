@@ -80,11 +80,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)GraphicsSandBox\include;$(ProjectDir)DirectXTex\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)DirectXTex\bin;$(SolutionDir)GraphicsSandBox\libraries;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)DirectXTex\lib;$(SolutionDir)GraphicsSandBox\libraries;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)GraphicsSandBox\include;$(ProjectDir)DirectXTex\include;$(IncludePath);</IncludePath>
-    <LibraryPath>$(ProjectDir)DirectXTex\bin;$(SolutionDir)GraphicsSandBox\libraries;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)DirectXTex\lib;$(SolutionDir)GraphicsSandBox\libraries;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

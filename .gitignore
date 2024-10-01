@@ -38,6 +38,7 @@ bld/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
+
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
@@ -77,7 +78,9 @@ StyleCopReport.xml
 *.meta
 *.obj
 !GraphicsSandBox/Resources/Models/**/*.obj
-!GraphicsSandBox/DirectXTex/bin/
+
+!GraphicsSandBox/DirectXTex/lib/Debug
+!GraphicsSandBox/DirectXTex/lib/Release
 *.iobj
 *.pch
 *.pdb
