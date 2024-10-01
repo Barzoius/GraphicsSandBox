@@ -26,18 +26,18 @@ protected:
     void AddBind(std::shared_ptr<Bind::Bindable> bind) noexcept;
 
 public:
-	template<class T>
-	T* QueryBindable() noexcept
-	{
-		for (auto& pb : binds)
-		{
-			if (auto pt = dynamic_cast<T*>(pb.get()))
-			{
-				return pt;
-			}
-		}
-		return nullptr;
-	}
+    template<class T>
+    T* QueryBindable() noexcept
+    {
+        for (auto& pb : binds)
+        {
+            if (auto pt = dynamic_cast<T*>(pb.get()))
+            {
+                return pt;
+            }
+        }
+        return nullptr;
+    }
 
 private:
     const Bind::IndexBuffer* pIndexBuffer = nullptr;

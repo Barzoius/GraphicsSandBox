@@ -77,14 +77,11 @@ public:
 
     void EndFrame();
     void BeginFrame(float R, float G, float B) noexcept;
-    void ClearBuffer(float red, float green, float blue) noexcept;
 
-    void DrawTestTriangle(float angle, float x, float y);
     void DrawIndexed(UINT count) noexcept;
     void SetProjection(DirectX::FXMMATRIX proj) noexcept;
     DirectX::XMMATRIX GetProjection() const noexcept;
 
-    void DrawTrig();
    
     void EnableImgui() noexcept;
     void DisableImgui() noexcept;
