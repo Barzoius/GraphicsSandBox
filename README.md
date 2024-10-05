@@ -1,5 +1,40 @@
 # GraphicsSandBox
 
+## Build
+This project uses Visual Studio 2022 and requiers the following WorkLoads:
+| |  |
+|---|---|
+|  ![](GraphicsSandBox/Resources/ForREADME/CPP_VS.png) | ![](GraphicsSandBox/Resources/ForREADME/DirectX_VS.png) |
+
+After this is done only clone the repository and build it.
+
+-------------------------------
+
+## Controls
+
+* A/D/S/W - Move LEFT/RIGHT/BACKWARD/FORWARD
+* R/F - Move UP/DOWN
+* ESC - Enable/Disable free movement
+
+-------------------------------
+
+## Features
+
+* Geometric primitives
+    - Cube
+    - Pyramid
+    - Tessellated Plane
+    - Prism
+    - Cylinder
+    - UV Sphere
+    - Torus
+* Assimp Model Loading
+* Blinn-Phong Lighting
+* Normal Mapping
+* Scene Graph
+* Alpha Blending
+
+
 ## Screenshots
 
 ## 3D Primitives
@@ -95,3 +130,5 @@
 |  |  |
 |---|---|
 |  ![](GraphicsSandBox/Resources/ForREADME/AB2.png) | ![](GraphicsSandBox/Resources/ForREADME/AB.png) |
+
+-------------------------------

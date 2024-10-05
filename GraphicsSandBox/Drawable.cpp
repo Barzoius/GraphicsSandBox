@@ -8,10 +8,13 @@
 
 using namespace Bind;
 
+#include <iostream>
+
 void Drawable::Draw(Graphics& gfx) const noexcept
 {
     for (auto& b : binds)
     {
+        //std::cout << "Bind\n";
         b->Bind(gfx);
     }
 

@@ -17,6 +17,7 @@ public:
         assert(vertices.Size() > 2);
         assert(indices.size() % 3 == 0);
     }
+
     void Transform(DirectX::FXMMATRIX matrix)
     {
         using Elements = DVS::VertexLayout::ElementType;
