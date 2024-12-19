@@ -156,6 +156,9 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="TestPrism.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModWin.h">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="WND_MACROS.h">
       <Filter>Header Files\MACROS</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPrism.h">
+      <Filter>Header Files\Drawables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

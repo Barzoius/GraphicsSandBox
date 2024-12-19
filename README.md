@@ -18,6 +18,16 @@ After this is done only clone the repository and build it.
 
 -------------------------------
 
+## Framework Overview
+
+![](GraphicsSandBox/Resources/ForREADME/diag2.png)
+
+- Drawable: A base class that contains a vector of shared pointers to Bindable objects, which represent GPU resources(Vertex Buffers, Index Buffers, Constant Buffers, Shaders, etc).
+- Mesh: Inherits from Drawable and represents a renderable object. It utilizes the Drawable's bindables to define its rendering behavior.
+- Codex: A resource management class that maintains a map of all created Bindable objects. When a Mesh requests a Bindable, the Codex checks if it already exists, allowing for resource reuse and avoiding redundant creation.
+
+
+
 ## Features
 
 * Geometric primitives

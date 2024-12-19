@@ -40,6 +40,8 @@ Application::Application()
     redPlane.SetPos(camera.GetPos());
     yellowPlane.SetPos(camera.GetPos());
 
+    //prism.SetPos(camera.GetPos());
+
     wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f,  0.5f, 500.0f));
 
 }
@@ -106,6 +108,8 @@ void Application::DoFrame()
     //goblin.Draw(wnd.Gfx());
 
     light.Draw(wnd.Gfx());
+
+    //prism.Draw(wnd.Gfx());
 
     sponza.Draw(wnd.Gfx());
 

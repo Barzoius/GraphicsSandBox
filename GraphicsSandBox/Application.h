@@ -8,6 +8,7 @@
 
 #include "TestPlane.h"
 //#include "TestCube.h"
+#include "TestPrism.h"
 
 #include "PointLight.h"
 
@@ -50,6 +51,9 @@ private:
     TestPlane bluePlane{ wnd.Gfx(),6.0f,{ 0.3f,0.3f,1.0f,0.0f } };
     TestPlane yellowPlane{ wnd.Gfx(),6.0f,{ 1.0f, 1.0f, 0.0f, 0.0f } };
     TestPlane redPlane{ wnd.Gfx(),6.0f,{  1.0f,0.3f,0.3f,0.0f } };
+
+    //TestPrism prism{ wnd.Gfx(),6.0f };
+
 
     //TestPlane plane{wnd.Gfx(), 1.0f};
 

@@ -9,8 +9,8 @@
 class Prism
 {
 public:
-    template <typename V>
-    static IndexedTrigList<V> MakeTesselated(int sectors)
+
+    static IndexedTrigList MakeTesselated(DVS::VertexLayout layout, int sectors)
     {
         const float radius = 1.0f;
         const float height = 3.0f;
@@ -18,6 +18,8 @@ public:
         const float longitudeAngle = 2.0f * FPI / sectors;
 
         float sectorAngle;
+
+        DVS::VertexBuffer vb{ std::move(layout) };
 
         std::vector<float> circleVertices;
 
@@ -29,50 +31,57 @@ public:
             circleVertices.push_back(0.0f); // z
         }
 
-        std::vector<V> vertices;
+        int Vsize = 0;
 
-     
-
+    
         for (int i = 0; i < 2; i++)
         {
             float z = -height / 2.0f + i * height;
 
             for (int j = 0, k = 0; j <= sectors; j++, k += 3)
             {
-                vertices.emplace_back();
+
 
                 float ux = circleVertices[k];
                 float uy = circleVertices[k + 1];
+                float uz = circleVertices[k + 2];
 
+                Vsize++;
 
-                const auto vertex = DirectX::XMVectorSet(ux * radius, uy * radius, z, 0.0f);
-                DirectX::XMStoreFloat3(&vertices.back().pos, vertex);
+                vb.EmplaceBack(
+                    DirectX::XMFLOAT3{ ux * radius ,uy * radius, z }
+                );
 
             }
         }
 
-        unsigned short baseCenterIndex = (unsigned short)vertices.size();
+        unsigned short baseCenterIndex = (unsigned short)Vsize;
         unsigned short topCenterIndex = (unsigned short)(baseCenterIndex + sectors + 1);
 
         for (int i = 0; i < 2; i++)
         {
             float z = -height / 2.0f + i * height;
+            float nz = -1 + i * 2;
 
-
-            vertices.emplace_back();
             const auto circleVertex = DirectX::XMVectorSet(0.0f, 0.0f, z, 0.0f);
-            DirectX::XMStoreFloat3(&vertices.back().pos, circleVertex);
+
+            vb.EmplaceBack(
+                DirectX::XMFLOAT3{ 0.0f, 0.0f, z }
+            );
+
 
             for (int j = 0, k = 0; j < sectors; j++, k += 3)
             {
-                vertices.emplace_back();
 
                 float ux = circleVertices[k];
                 float uy = circleVertices[k + 1];
 
           
                 const auto vertex = DirectX::XMVectorSet(ux * radius, uy * radius, z, 0.0f);
-                DirectX::XMStoreFloat3(&vertices.back().pos, vertex);
+
+                vb.EmplaceBack(
+                    DirectX::XMFLOAT3{ ux * radius, uy * radius, z }
+                );
 
             }
         }
@@ -130,13 +139,18 @@ public:
             }
         }
 
-        return { std::move(vertices), std::move(indices) };
+        return { std::move(vb),std::move(indices) };
     }
 
-    template <typename V>
-    static IndexedTrigList <V> Make()
+
+    static IndexedTrigList Make()
     {
-        return MakeTesselated<V>(3);
+
+        using DVS::VertexLayout;
+        VertexLayout vl;
+        vl.Append(VertexLayout::Position3D);
+
+        return MakeTesselated(std::move(vl), 3);
     }
 
 };
